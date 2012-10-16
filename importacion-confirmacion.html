@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>New Time Logistics</title>
+        <meta name="description" content="Elección de transporte logístico internacional. Asesor logístico virtual.">
+        <meta name="keywords" content="New Time Logistics, Transporte, Importación, Exportación, Logística, Internacional, Marítimo, Búsqueda, Comparación">
+        <meta name="viewport" content="width=device-width; initial-scale=1.0;">
+        <!-- css -->
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+        <link href="css/normalize.css" rel="stylesheet">
+        <link type="text/css" href="jquery-ui-1.8.24.custom/css/custom-theme/jquery-ui-1.8.24.custom.css" rel="stylesheet" />
+        <link href="css/style.css" rel="stylesheet">
+        <link href="css/responsive.css" rel="stylesheet">
+        <!-- scripts -->
+        <script src="js/modernizr.custom.98935.js"></script>
+        <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+        <!--datepicker-->
+        <script type="text/javascript" src="jquery-ui-1.8.24.custom/js/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="jquery-ui-1.8.24.custom/js/jquery-ui-1.8.24.custom.min.js"></script>
+
+        <!--G+-->
+        <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+
+    </head>
+
+    <body>
+
+        <!--facebook-->
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/es_LA/all.js#xfbml=1";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>  
+
+    <div class="container">
+
+        <!--HEADER-->
+        <header>
+            <div class="header">
+                <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+                <button class="btn-user float-left" id="btnOpenDdUser" onClick="dropdownUserOpen()" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <button class="btn-user float-left" id="btnCloseDdUser" onClick="dropdownUserClose()" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
+                    <form style="display:block;"><!--Mostrar solo si el usuario no está logueado-->
+                        <h6>E-mail</h6>
+                        <input type="email">
+                        <h6>Contraseña</h6>
+                        <input type="password">
+                        <input type="submit" value="Ingresar">
+                    </form>
+                    <div style="display:none;"><!--Mostrar solo si el usuario está logueado-->
+                        <p>usuario@mail.com</p><!--Dato: Mail del usuario-->
+                        <input type="button" value="Cerrar sesión">
+                    </div>
+                  </div>
+            </div>
+            <div class="clear"></div>
+            
+            <div class="nav">
+                <nav class="width-74 float-left">
+                    <ul>
+                        <li><a href="importacion.html">Importación</a></li>
+                        <li><a href="exportacion.html">Exportación</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </nav>
+                <div class="width-24 float-left">
+                    <p>
+                        <a href="#">Español</a> |
+                        <a href="#">English</a>
+                    </p>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+        </header>
+        <!--end HEADER-->
+
+        <!--CONTENT-->
+        <section>
+            
+            <div>
+                
+                <!--left column-->
+                <div class="width-74 float-left">
+                    <nav>
+                        <h2 class="float-left">Importar</h2>
+                        <ul class="float-left">
+                            <li class="btn-paso1"><a href="importacion.html">Formulario de cotización</a></li>
+                            <li class="btn-paso2"><a href="importacion-transportes.html">Transportes disponibles</a></li>
+                            <li class="btn-paso3 btn-paso3-active"><a href="importacion-confirmacion.html">Confirmación de compra</a></li>
+                        </ul>
+                        <div class="clear"></div>
+                    </nav>
+
+                    <form class="confirmacion">
+                        <div class="container-border">
+                            <div class="container-padding bg-gray">
+                                <div class="width-49 float-left">
+                                    <h5>ORDEN DE IMPORTACIÓN #<label>123456</label></h5>
+                                    <p>ORIGEN: <label>Ciudad, País</label></p>
+                                    <p>DESTINO: <label>Ciudad, País</label></p>
+                                    <p>FECHA: <label>dd/mm/aaaa</label></p>
+                                </div>
+                                <div class="width-49 float-left">
+                                    <div class="confirmacion-NTLdata">
+                                        <p>www.newtimelogistics.com</p>
+                                        <p>Asesoría virtual en Logística Internacional</p>
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div class="container-padding">
+                                <div class="width-49 float-left">
+                                    <h5>Datos del transporte</h5>
+                                    <p>Línea: <label>Nombre empresa</label></p>
+                                    <p>Tel: <label>(011) 12345678</label></p>
+                                    <p>Web: <a href="#" target="_blank">www.dominio.com</a></p>
+                                    <p>Dirección: <label>Dirección 123, Ciudad, País</label></p>
+                                </div>
+                                <div class="width-49 float-left">
+                                    <h5>Cantidad</h5>
+                                    <p><label>3</label> <label>Contenedores</label> de <label>40HQ</label></p>
+                                    <p><label>3</label> <label>Contenedores</label> de <label>40HQ</label></p>
+                                </div>
+                                <div class="clear"></div>
+                                <h5>Detalle</h5>
+                                <table class="results">
+                                    <tr>
+                                        <td>Flete</td>
+                                        <td>Destino</td>
+                                        <td>Días libres</td>
+                                        <td>Escala</td>
+                                        <td>Terminal</td>
+                                        <td>Validez</td>
+                                    </tr>
+                                    <tr>
+                                        <td>999,99</td>
+                                        <td>999,99</td>
+                                        <td>10</td>
+                                        <td>Sí</td>
+                                        <td>Terminal 3</td>
+                                        <td>dd/mm/aaaa</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="container-padding bg-gray">
+                                <h5 class="total">TOTAL: <label>US $</label> <label>1999.98</label></h5>
+                            </div>
+                            <input type="submit" value="Confirmar" class="float-right">
+                            <div class="clear"></div>
+                        </div>
+                        <!--paginador-->
+                        <div>
+                            <div class="btn-group paginador">
+                                <input type="button" value="&lsaquo; Anterior" class="btn-chico float-left">
+                                <input type="reset" value="Cancelar" class="btn-chico float-left ie-cancel">
+                                <input type="button" value="Siguiente &rsaquo;" class="btn-chico float-right" disabled="disabled">
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                        <!--end paginador-->
+                    </form>
+                </div>
+                <!--end left column-->
+                <!--right column-->
+                <aside class="width-24 float-left">
+                    
+                </aside>
+                <!--end right column-->
+
+                <div class="clear"></div>
+
+            </div>
+            
+        </section>
+        <!--end CONTENT-->
+
+        <!--FOOTER-->
+        <footer>
+            <div class="width-49 float-left">
+                <p>New Time Logistics ® | Asesoría virtual en Logística Internacional | 
+                    <a href="contacto.html">Contactar</a>
+                </p>    
+            </div>
+            <div class="width-49 float-left">
+                <ul class="float-right">
+                    <li>
+                        <div class="fb-like" data-href="http://www.newtimelogistics.com/" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="tahoma"></div>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.newtimelogistics.com/">Tweet</a>
+                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                    </li>
+                    <li>
+                        <div class="g-plusone" data-size="medium" data-href="http://www.newtimelogistics.com/"></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+        </footer>
+        <!--end FOOTER-->
+
+    </div><!--end container-->
+
+
+    <!--SCRIPTS-->
+
+    <script type="text/javascript">
+    
+    function dropdownUserOpen(){
+
+      document.getElementById("dropdownUser").style.display="block";
+      document.getElementById("btnOpenDdUser").style.display="none";
+      document.getElementById("btnCloseDdUser").style.display="inline";
+
+    }
+
+    function dropdownUserClose(){
+
+      document.getElementById("dropdownUser").style.display="none";
+      document.getElementById("btnOpenDdUser").style.display="inline";
+      document.getElementById("btnCloseDdUser").style.display="none";
+
+    }
+
+    </script>
+
+    <!--end SCRIPTS-->
+
+    </body>
+</html>

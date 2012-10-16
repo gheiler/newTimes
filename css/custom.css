@@ -1,0 +1,21 @@
+.list-filter {
+    display: none;
+    list-style-type: none;
+    margin: 0px;
+    padding-left: 0px;
+    margin-top: -20px;
+    border: 1px solid;
+    margin-bottom: 5px;
+    font-size: 0.7em;
+    position: absolute;
+    background-color: white;
+    width: 337px;
+}
+.list-filter li {
+    display: none;
+    padding: 0 5px;
+    cursor: pointer;
+}
+.list-filter li:hover {
+    background-color: #93c4e7;
+}

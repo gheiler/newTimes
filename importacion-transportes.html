@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>New Time Logistics</title>
+        <meta name="description" content="Elección de transporte logístico internacional. Asesor logístico virtual.">
+        <meta name="keywords" content="New Time Logistics, Transporte, Importación, Exportación, Logística, Internacional, Marítimo, Búsqueda, Comparación">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- css -->
+        <link type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet">
+        <link type="text/css" href="css/normalize.css" rel="stylesheet">
+        <link type="text/css" href="css/custom-theme/jquery-ui-1.8.24.custom.css" rel="stylesheet">
+        <link type="text/css" href="css/style.css" rel="stylesheet">
+        <!-- scripts -->
+        <script src="js/libs/modernizr.custom.98935.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-ui-1.8.24.custom.min.js"></script><!--datepicker-->
+        <script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="js/utils.js"></script>
+        <script type="text/javascript" src="js/mainController.js"></script>
+        <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+    </head>
+    <body id="cntBody">
+    <!--facebook-->
+    <div id="fb-root"></div>
+    <div class="container">
+        <!--HEADER-->
+        <header>
+            <div class="header">
+                <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+                <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
+                    <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
+                        <h6>E-mail</h6>
+                        <input id="txtEmailHeader" type="email">
+                        <h6>Contraseña</h6>
+                        <input id="txtPasswordHeader" type="password">
+                        <input id="btnLoginHeader" type="submit" value="Ingresar">
+                        <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
+                    </form>
+                    <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
+                        <p id="userEmailHeader"></p><!--Dato: Mail del usuario-->
+                        <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <div class="nav">
+                <nav class="width-74 float-left">
+                    <ul>
+                        <li><a href="importacion.html">Importación</a></li>
+                        <li><a href="exportacion.html">Exportación</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </nav>
+                <div class="width-24 float-left">
+                    <p>
+                        <a href="#">Español</a> |
+                        <a href="#">English</a>
+                    </p>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </header>
+        <!--end HEADER-->
+        <!--CONTENT-->
+        <section>
+            <div>
+                <!--left column-->
+                <div class="width-74 float-left">
+                    <nav>
+                        <h2 class="float-left">Importar</h2>
+                        <ul class="float-left">
+                            <li class="btn-paso1"><a href="importacion.html">Formulario de cotización</a></li>
+                            <li class="btn-paso2 btn-paso2-active"><a href="importacion-transportes.html">Transportes disponibles</a></li>
+                            <li class="btn-paso3"><a href="importacion-confirmacion.html">Confirmación de compra</a></li>
+                        </ul>
+                        <div class="clear"></div>
+                    </nav>
+                    <div class="container-border">
+                        <div>
+                            <h2 class="width-74 float-left">
+                                Empresas marítimas de importación
+                                <input type="button" value="(Ver cuadro comparativo)" class="btn-link" id="dialog_link">
+                            </h2>
+                            <div class="width-24 float-left">
+
+                                <div class="width-49 float-left">
+                                    <div class="relative btn-ordenar">
+                                        <button class="btn-desplegable btn-chico float-right">
+                                            Ordenar&nbsp;
+                                            <img src="img/dropdown-arrow.png" alt="dropdown">
+                                        </button>
+                                        <div class="dropdown dd-ordenar">
+                                            <a href="#">Menor precio</a>
+                                            <a href="#">Meyor precio</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="width-49 float-left">
+                                    <div class="relative btn-moneda">
+                                        <button class="btn-desplegable btn-chico float-right">
+                                            Moneda&nbsp;
+                                            <img src="img/dropdown-arrow.png" alt="dropdown">
+                                        </button>
+                                        <div class="dropdown dd-moneda">
+                                            <a href="#">US $</a>
+                                            <a href="#">AR $</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <ul id="cntSearchResults" class="results">
+                        </ul>
+                        <!--Paginador de resultados-->
+                        <!--<div class="pagination-results">
+                            <input type="button" value="&laquo;">
+                            <input type="button" value="&lsaquo;">
+                            <input type="button" value="1" class="btn-link page-active">
+                            <input type="button" value="2" class="btn-link">
+                            <input type="button" value="3" class="btn-link">
+                            <input type="button" value="4" class="btn-link">
+                            <input type="button" value="5" class="btn-link"><!--Máximo 5 pages-->
+                            <!--<input type="button" value="&rsaquo;">
+                            <input type="button" value="&raquo;">
+                        </div>-->
+                        <!--End Paginador de resultados-->
+                    </div>
+                    <!--paginador-->
+                    <div>
+                        <div class="btn-group paginador">
+                            <input type="button" value="&lsaquo; Anterior" class="btn-chico float-left">
+                            <input type="reset" value="Cancelar" class="btn-chico float-left ie-cancel">
+                            <input type="button" value="Siguiente &rsaquo;" class="btn-chico float-right" disabled="disabled">
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                    <!--end paginador-->
+                </div>
+                <!--end left column-->
+                <!--right column-->
+                <aside class="width-24 float-left">
+                    <div class="container-border">
+                        <form class="container-padding">
+                            <div id="cntOrigen">
+                                <h6>Origen</h6>
+                                <input type="text" id="txtOrigen">
+                            </div>
+                            <div id="cntDestino">
+                                <h6>Destino</h6>
+                                <input type="text" id="txtDestino">
+                            </div>
+                            <h6>Fecha de embarque</h6>
+                            <input type="text" id="txtFecha" />
+                            <h6>Tipo de carga</h6>
+                            <select id="selTipoCarga">
+                                <option value="fcl">FCL</option>
+                                <option value="lcl">LCL</option>
+                            </select>
+                            <!--FCL-->
+                            <div id="cntFCLContenedores">
+                                <div class="width-24 float-left">
+                                    <h6>Cantidad</h6>
+                                    <input type="number" id="txtFCLCantidad">
+                                </div>
+                                <div class="width-49 float-left">
+                                    <h6>Capacidad</h6>
+                                    <select id="selFCLCapacidad">
+                                    </select>
+                                </div>
+                                <input id="btnFCLAgregar" type="button" value="+" class="btn-chico float-left" title="Agregar">
+                                <div class="clear"></div>
+                                <h6>Contenedores agregados</h6>
+                                <table id="tblFCLItems" class="tbl-first-20">
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <!--end FCL-->
+                            <!--LCL-->
+                            <div id="cntLCLContenedores">
+                                <div class="width-24 float-left">
+                                    <h6>Cantidad</h6>
+                                    <input type="number" id="txtLCLCantidad">
+                                </div>
+                                <div class="width-49 float-left">
+                                    <h6>Medida</h6>
+                                    <select id="selLCLMedida">
+                                    </select>
+                                </div>
+                                <input id="btnLCLAgregar" type="button" value="+" class="btn-chico float-left" title="Agregar">
+                                <div class="clear"></div>
+                                <h6>Contenedores agregados</h6>
+                                <table id="tblLCLItems" class="tbl-first-20">
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <!--end LCL-->
+                            <hr>
+                            <h6>Líneas</h6>
+                            <input type="checkbox"><label>Línea 1</label><br>
+                            <input type="checkbox"><label>Línea 2</label><br>
+                            <input type="checkbox"><label>Línea 3</label><br>
+                            <input type="checkbox"><label>Línea 4</label><br>
+                            <input type="checkbox"><label>Línea 5</label><br>
+                            <hr>
+                            <h6>Terminales</h6>
+                            <input type="checkbox"><label>Terminal 1</label><br>
+                            <input type="checkbox"><label>Terminal 2</label><br>
+                            <input type="checkbox"><label>Terminal 3</label><br>
+                            <input type="checkbox"><label>Terminal 4</label><br>
+                            <input type="checkbox"><label>Terminal 5</label><br>
+                            <hr>
+                            <h6>Escala</h6>
+                            <input type="checkbox"><label>Si</label><br>
+                            <input type="checkbox"><label>No</label><br>
+                            <hr>
+                            <h6>Días libres</h6>
+                            <input type="checkbox"><label>Si</label><br>
+                            <input type="checkbox"><label>No</label><br>
+                            <hr>
+                            <input id="btnAsideSearch" type="submit" value="Buscar">
+                            <input type="reset" value="Nueva búsqueda" class="btn-link">
+                        </form>
+                    </div>
+                </aside>
+                <!--end right column-->
+                <div class="clear"></div>
+            </div>
+        </section>
+        <!--end CONTENT-->
+        <!--FOOTER-->
+        <footer>
+            <div class="width-49 float-left">
+                <p>New Time Logistics ® | Asesoría virtual en Logística Internacional | 
+                    <a href="contacto.html">Contactar</a>
+                </p>    
+            </div>
+            <div class="width-49 float-left">
+                <ul class="float-right">
+                    <li>
+                        <div class="fb-like" data-href="http://www.newtimelogistics.com/" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="tahoma"></div>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.newtimelogistics.com/">Tweet</a>
+                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                    </li>
+                    <li>
+                        <div class="g-plusone" data-size="medium" data-href="http://www.newtimelogistics.com/"></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+        </footer>
+        <!--end FOOTER-->
+    </div><!--end container-->
+    <!-- ui-dialog -->
+    <div id="dialog" title="Comparar transportes">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th><img src="img/img-results.png" alt="logo empresa"></th>
+                    <th><img src="img/img-results.png" alt="logo empresa"></th>
+                    <th><img src="img/img-results.png" alt="logo empresa"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Empresa</td>
+                    <td>Nombre empresa</td>
+                    <td>Nombre empresa</td>
+                    <td>Nombre empresa</td>
+                </tr>
+                <tr>
+                    <td>Flete (US $)</td>
+                    <td>999,99</td>
+                    <td>999,99</td>
+                    <td>999,99</td>
+                </tr>
+                <tr>
+                    <td>Destino (US $)</td>
+                    <td>999,99</td>
+                    <td>999,99</td>
+                    <td>999,99</td>
+                </tr>
+                <tr>
+                    <td>Días libres</td>
+                    <td>10</td>
+                    <td>10</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>Escala</td>
+                    <td>Sí</td>
+                    <td>Sí</td>
+                    <td>Sí</td>
+                </tr>
+                <tr>
+                    <td>Terminal</td>
+                    <td>Terminal 3</td>
+                    <td>Terminal 3</td>
+                    <td>Terminal 3</td>
+                </tr>
+                <tr>
+                    <td>Validez</td>
+                    <td>dd/mm/aaaa</td>
+                    <td>dd/mm/aaaa</td>
+                    <td>dd/mm/aaaa</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>TOTAL (US $)</td>
+                    <td>1999,98</td>
+                    <td>1999,98</td>
+                    <td>1999,98</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- end ui-dialog -->
+    </body>
+</html>

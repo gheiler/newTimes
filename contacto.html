@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>New Time Logistics</title>
+    <meta name="description" content="Elección de transporte logístico internacional. Asesor logístico virtual.">
+    <meta name="keywords" content="New Time Logistics, Transporte, Importación, Exportación, Logística, Internacional, Marítimo, Búsqueda, Comparación">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0;">
+    <!-- css -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href="css/normalize.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+    <!-- scripts -->
+    <script src="js/modernizr.custom.98935.js"></script>
+  </head>
+  <body>
+
+    <div class="container">
+    
+    <!--HEADER-->
+      <header class="header-index">
+        <div class="header">
+          <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+          <button class="btn-user float-left" id="btnOpenDdUser" onClick="dropdownUserOpen()" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
+          <button class="btn-user float-left" id="btnCloseDdUser" onClick="dropdownUserClose()" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
+          <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
+           <form style="display:block;"><!--Mostrar solo si el usuario no está logueado-->
+              <h6>E-mail</h6>
+              <input type="email">
+              <h6>Contraseña</h6>
+              <input type="password">
+              <input type="submit" value="Login">
+              <input type="button" value="Nuevo usuario">
+            </form>
+            <div style="display:none;"><!--Mostrar solo si el usuario está logueado-->
+              <p>usuario@mail.com</p><!--Dato: Mail del usuario-->
+              <input type="button" value="Cerrar sesión">
+            </div>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <nav>
+          <ul>
+            <li><a href="importacion.html">Importación</a></li>
+            <li><a href="exportacion.html">Exportación</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </nav>
+      </header>
+    <!--end HEADER-->
+
+    <!--CONTENT-->
+      <section class="bg-index">
+        <div>
+          <div class="width-49">
+            <h1 class="align-right"><span class="red">NEW TIME</span> <span class="blue">LOGISTICS</span> Contactar</h1>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <div>
+          <form>
+            <div class="width-49 float-left">
+              <h6>Nombre</h6>
+              <input type="text">
+              <h6>Apellido</h6>
+              <input type="text">
+              <h6>E-mail</h6>
+              <input type="email">
+            </div>
+            <div class="width-49 float-left">
+              <h6>Teléfono</h6>
+              <input type="tel">
+              <h6>Mensaje</h6>
+              <textarea></textarea>
+            </div>
+            <div class="clear"></div>
+            <input type="submit" value="Enviar">
+          </form>
+        </div>
+        
+        
+      </section>
+    <!--end CONTENT-->
+
+    <!--FOOTER-->
+      <footer>
+        <p>New Time Logistic ® | Asesoría virtual en Logística Internacional | 
+          <a href="contacto.html">Contactar</a> | 
+          <a href="#">Español</a> | 
+          <a href="#">English</a>
+        </p>
+      </footer>
+    <!--end FOOTER-->
+
+    </div>
+
+    <!--SCRIPTS-->
+
+    <script type="text/javascript">
+    
+    function dropdownUserOpen(){
+
+      document.getElementById("dropdownUser").style.display="block";
+      document.getElementById("btnOpenDdUser").style.display="none";
+      document.getElementById("btnCloseDdUser").style.display="inline";
+
+    }
+
+    function dropdownUserClose(){
+
+      document.getElementById("dropdownUser").style.display="none";
+      document.getElementById("btnOpenDdUser").style.display="inline";
+      document.getElementById("btnCloseDdUser").style.display="none";
+
+    }
+
+    </script>
+
+    <!--end SCRIPTS-->
+
+  </body>
+</html>

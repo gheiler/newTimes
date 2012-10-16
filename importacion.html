@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>New Time Logistics</title>
+        <meta name="description" content="Elección de transporte logístico internacional. Asesor logístico virtual.">
+        <meta name="keywords" content="New Time Logistics, Transporte, Importación, Exportación, Logística, Internacional, Marítimo, Búsqueda, Comparación">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- css -->
+        <link type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet">
+        <link type="text/css" href="css/normalize.css" rel="stylesheet">
+        <link type="text/css" href="css/custom-theme/jquery-ui-1.8.24.custom.css" rel="stylesheet">
+        <link type="text/css" href="css/style.css" rel="stylesheet">
+        <!-- scripts -->
+        <script src="js/libs/modernizr.custom.98935.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+        <script type="text/javascript" src="js/libs/jquery-ui-1.8.24.custom.min.js"></script><!--datepicker-->
+        <script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="js/utils.js"></script>
+        <script type="text/javascript" src="js/mainController.js"></script>
+        <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+    </head>
+    <body id="cntBody">
+    <!--facebook-->
+    <div id="fb-root"></div>
+    <div class="container">
+        <!--HEADER-->
+        <header>
+            <div class="header">
+                <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+                <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
+                    <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
+                        <h6>E-mail</h6>
+                        <input id="txtEmailHeader" type="email">
+                        <h6>Contraseña</h6>
+                        <input id="txtPasswordHeader" type="password">
+                        <input id="btnLoginHeader" type="submit" value="Ingresar">
+                        <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
+                    </form>
+                    <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
+                        <p id="userEmailHeader"></p><!--Dato: Mail del usuario-->
+                        <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <div class="nav">
+                <nav class="width-74 float-left">
+                    <ul>
+                        <li><a href="importacion.html">Importación</a></li>
+                        <li><a href="exportacion.html">Exportación</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                    </ul>
+                </nav>
+                <div class="width-24 float-left">
+                    <p>
+                        <a href="#">Español</a> |
+                        <a href="#">English</a>
+                    </p>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </header>
+        <!--end HEADER-->
+        <!--CONTENT-->
+        <section>
+            <div>
+                <!--left column-->
+                <div class="width-74 float-left">
+                    <nav>
+                        <h2 class="float-left">Importar</h2>
+                        <ul class="float-left">
+                            <li class="btn-paso1 btn-paso1-active"><a href="importacion.html">Formulario de cotización</a></li>
+                            <li class="btn-paso2"><a id="lnkPaso2" href="importacion-transportes.html">Transportes disponibles</a></li>
+                            <li class="btn-paso3"><a href="importacion-confirmacion.html">Confirmación de compra</a></li>
+                        </ul>
+                        <div class="clear"></div>
+                    </nav>
+                    <form>
+                        <div class="container-border">
+                            <div>
+                                <div id="cntOrigen" class="width-49 float-left">
+                                    <h6>Origen</h6>
+                                    <input type="text" id="txtOrigen">
+                                </div>
+                                <div id="cntDestino" class="width-49 float-left">
+                                    <h6>Destino</h6>
+                                    <input type="text" id="txtDestino">
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div>
+                                <div class="width-49 float-left">
+                                    <h6>Fecha de embarque</h6>
+                                    <input type="text" id="txtFecha" />
+                                </div>
+                                <div class="width-49 float-left">
+                                    <h6>Tipo de carga</h6>
+                                    <select id="selTipoCarga">
+                                        <option value="fcl">FCL</option>
+                                        <option value="lcl">LCL</option>
+                                    </select>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <h3>Agregar contenedor</h3>
+                            <!--FCL-->
+                            <div id="cntFCLContenedores">
+                                <div class="width-49 float-left">
+                                    <div class="width-24 float-left">
+                                        <h6>Cantidad</h6>
+                                        <input type="number" id="txtFCLCantidad">
+                                    </div>
+                                    <div class="width-49 float-left">
+                                        <h6>Capacidad</h6>
+                                        <select id="selFCLCapacidad">
+                                        </select>
+                                    </div>
+                                    <input id="btnFCLAgregar" type="button" value="Agregar" class="btn-chico float-left">
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="width-49 float-left">
+                                    <h6>Contenedores agregados</h6>
+                                    <table id="tblFCLItems" class="tbl-first-20">
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <!--end FCL-->
+                            <!--LCL-->
+                            <div id="cntLCLContenedores">
+                                <div class="width-49 float-left">
+                                        <div class="width-24 float-left">
+                                            <h6>Cantidad</h6>
+                                            <input type="number" id="txtLCLCantidad">
+                                        </div>
+                                        <div class="width-49 float-left">
+                                            <h6>Medida</h6>
+                                            <select id="selLCLMedida">
+                                            </select>
+                                        </div>
+                                        <input id="btnLCLAgregar" type="button" value="Agregar" class="btn-chico float-left">
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="width-49 float-left">
+                                    <h6>Contenedores agregados</h6>
+                                    <table id="tblLCLItems" class="tbl-first-20">
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <!--end LCL-->
+                        </div>
+                        <!--paginador-->
+                        <div>
+                            <div class="btn-group paginador">
+                                <input disabled="disabled" type="button" value="&lsaquo; Anterior" class="btn-chico float-left">
+                                <input type="reset" value="Cancelar" class="btn-chico float-left ie-cancel">
+                                <input id="nextStep" type="submit" value="Siguiente &rsaquo;" class="btn-chico float-right">
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                        <!--end paginador-->
+                    </form>
+                </div>
+                <!--end left column-->
+                <!--right column-->
+                <aside id="cntLoginAside" class="width-24 float-left">
+                    <div class="container-border">
+                        <div class="btn-group">
+                            <button class="btn-chico float-left btn-azul">Login</button>
+                            <button id="btnRegisterAside" class="btn-chico float-right">Registro</button>
+                            <div class="clear"></div>
+                        </div>
+                        <form class="container-padding">
+                            <h6>Email</h6>
+                            <input id="txtEmailAside" type="email">
+                            <h6>Contraseña</h6>
+                            <input id="txtPasswordAside" type="password">
+                            <input id="btnLoginAside" type="submit" value="Ingresar" class="btn-chico">
+                        </form>
+                    </div>
+                </aside>
+                <!--end right column-->
+                <div class="clear"></div>
+            </div>
+        </section>
+        <!--end CONTENT-->
+        <!--FOOTER-->
+        <footer>
+            <div class="width-49 float-left">
+                <p>New Time Logistics ® | Asesoría virtual en Logística Internacional | 
+                    <a href="contacto.html">Contactar</a>
+                </p>    
+            </div>
+            <div class="width-49 float-left">
+                <ul class="float-right">
+                    <li>
+                        <div class="fb-like" data-href="http://www.newtimelogistics.com/" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="tahoma"></div>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.newtimelogistics.com/">Tweet</a>
+                    </li>
+                    <li>
+                        <div class="g-plusone" data-size="medium" data-href="http://www.newtimelogistics.com/"></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+        </footer>
+        <!--end FOOTER-->
+    </div><!--end container-->
+    <!-- ui-dialog -->
+    <div id="dialog" title="Registrar usuario">
+        <h6>Nombre</h6>
+        <input type="text" autofocus="true">
+        <h6>Apellido</h6>
+        <input type="text">
+        <h6>E-mail</h6>
+        <input type="email">
+        <h6>Contraseña</h6>
+        <input type="password">
+        <h6>Repetir contraseña</h6>
+        <input type="password">  
+    </div>
+    <!-- end ui-dialog -->
+    </div><!--end container-->
+    </body>
+</html>

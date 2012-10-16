@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>New Time Logistics</title>
+    <meta name="description" content="Elección de transporte logístico internacional. Asesor logístico virtual.">
+    <meta name="keywords" content="New Time Logistics, Transporte, Importación, Exportación, Logística, Internacional, Marítimo, Búsqueda, Comparación">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- css -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href="css/normalize.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+      <!--<link href="css/responsive.css" rel="stylesheet">-->
+    <!-- scripts -->
+    <script type="text/javascript" src="js/libs/modernizr.custom.98935.js"></script>
+    <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/mainController.js"></script>
+  </head>
+  <body>
+    <div class="container">
+    <!--HEADER-->
+      <header class="header-index">
+        <div class="header">
+          <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+          <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
+          <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
+          <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
+           <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
+                <h6>E-mail</h6>
+                <input type="email">
+                <h6>Contraseña</h6>
+                <input type="password">
+                <input id="btnLoginHeader" type="submit" value="Ingresar">
+                <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
+            </form>
+            <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
+                <p id="userEmailHeader">usuario@mail.com</p><!--Dato: Mail del usuario-->
+                <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+            </div>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <nav>
+          <ul>
+            <li><a href="importacion.html">Importación</a></li>
+            <li><a href="exportacion.html">Exportación</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </nav>
+      </header>
+    <!--end HEADER-->
+    <!--CONTENT-->
+      <section class="bg-index">
+        <div>
+          <div class="width-49 float-left">
+            <h1 class="align-right"><span class="red">NEW TIME</span> <span class="blue">LOGISTICS</span> logística internacional</h1>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <div>
+          <div class="width-49 float-left">
+            <p><span class="red">NUESTRA MISIÓN:</span> Revolucionar el sistema de elección en el  transporte logístico internacional para la mayor competitividad de nuestros clientes. Ser su asesor logístico virtual quien eliminara las barreras de tiempo dejando como premisa las mejores soluciones, producto de la  inteligencia artificial desarrollada por las necesidades de los propios clientes.</p>
+          </div>
+          <div class="width-49 float-left">
+            <p><span class="red">NUESTRA VISIÓN:</span> Cambiar el negocio de logistica, eliminando intermediarios y barreras que se traducen en demoras de la comunicacion directa entre las partes más interesadas y que generan el negocio.</p>
+            <p><span class="red">NUESTROS VALORES:</span> Ética, honestidad y transparencia.</p>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </section>
+    <!--end CONTENT-->
+    <!--FOOTER-->
+      <footer>
+        <p>New Time Logistic ® | Asesoría virtual en Logística Internacional | 
+          <a href="contacto.html">Contactar</a> | 
+          <a href="#">Español</a> | 
+          <a href="#">English</a>
+        </p>
+      </footer>
+    <!--end FOOTER-->
+    </div>
+  </body>
+</html>
