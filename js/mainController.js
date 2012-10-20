@@ -1,5 +1,5 @@
 // Global vars
-var itemsDaysToExpire = 1, defaultSectionHTML = "index.html", selectedOrigen = null, selectedDestino = null;
+var itemsDaysToExpire = 1, defaultSectionHTML = "index.html", selectedOrigen = null, selectedDestino = null, justChangePage = false;
 
 // plugin configs
 jQuery(function($){
@@ -43,6 +43,26 @@ $(function(){
         return false;
     });
 });
+(function(window,undefined){
+    // Prepare
+    var History = window.History;
+    // Bind to StateChange Event
+    History.Adapter.bind(window,'statechange',function() {
+        //var State = History.getState();
+        if(!justChangePage) {
+            goToCurrentSection();
+        } else {
+            justChangePage = false;
+        }
+        // History.pushState(null, null, "?state=4"); -> logs {}, "", "?state=4"',
+    });
+})(window);
+$(document).keyup(function(e) {
+  // on esc
+  if (e.keyCode == 27) {
+      $(".dialog-box").remove();
+  }
+});
 
 // Social stuff
 !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
@@ -50,32 +70,37 @@ $(function(){
 
 // Local Items
 var local = { // De momento usamos localStorage, recordar que si el navegador no dispone de la opcion decae automaticamente en cookie
-    get: function (sItems) {
-        var items = localStorage.getItem(sItems);
+    get: function (key) {
+        var items = localStorage.getItem(key);
         var retValue = null;
         if (items !== null) {
             var datedItems = JSON.parse(items);
-            var today = new Date();
-            today.setDate(today.getDate());
-            if (new Date(datedItems.dateTime) > today) {
+            // fucking IE8<
+            //var today = new Date();
+            //today.setDate(today.getDate());
+            //if (new Date(datedItems.dateTime) > today) {
                 retValue = datedItems.items;
-            } else {
-                localStorage.removeItem(sItems);
-            }
+            //} else {
+            //    localStorage.removeItem(sItems);
+            ///
         }
         if (typeof retValue == "undefined") {
             retValue = null;
         }
         return retValue;
     },
-    set: function (items, sItems) {
+    set: function (items, key, daysToExpire) {
         var tomorrow = new Date();
         var today = new Date();
-        tomorrow.setDate(today.getDate() + itemsDaysToExpire);
-        localStorage.setItem(sItems, JSON.stringify({ dateTime: tomorrow, items: items }));
+        if(daysToExpire !== undefined) {
+            tomorrow.setDate(today.getDate() + daysToExpire);
+        } else {
+            tomorrow.setDate(today.getDate() + itemsDaysToExpire);
+        }
+        localStorage.setItem(key, JSON.stringify({ dateTime: tomorrow, items: items }));
     },
     add: function (item) {
-        var items = this.Get();
+        var items = this.get();
         if (items !== null) {
             items.push(item);
             this.set(items);
@@ -84,7 +109,7 @@ var local = { // De momento usamos localStorage, recordar que si el navegador no
         }
     },
     remove: function (item) {
-        var items = this.Get();
+        var items = this.get();
         if (items !== null) {
             var i, total = items.length;
             for (i = 0; i < total; i++) {
@@ -96,8 +121,25 @@ var local = { // De momento usamos localStorage, recordar que si el navegador no
             }
         }
     },
-    reset: function (sItems) {
-        this.set([], sItems);
+    reset: function (key) {
+        localStorage.removeItem(key);
+    },
+    getByPropVal: function (key, prop, val) {
+        var items = localStorage.getItem(key);
+        var retValue = null;
+        if (items !== null) {
+            var datedItems = JSON.parse(items);
+            var i, total = datedItems.items.length;
+            for (i = 0; i < total; i++) {
+                if (datedItems.items[i].IdTarifario == val) {
+                    return datedItems.items[i];
+                }
+            }
+        }
+        if (typeof retValue == "undefined") {
+            retValue = null;
+        }
+        return retValue;
     }
 };
 
@@ -111,6 +153,10 @@ var sections = {
         html: "importacion-transportes.html",
         initialize: initImpoResults
     },
+    impoConfirm: {
+        html: "importacion-confirmacion.html",
+        initialize: initImpoConfirm
+    },
     expo: {
         html: "exportacion.html",
         load: loadExpo,
@@ -123,15 +169,14 @@ var sections = {
         initialize: initHome
     },
     register: {
-        html: "registro.html",
-        initialize: function () {
-            // TODO: implement 
-        }
+        html: "items/registro.html",
+        initialize: initRegister
     }
 };
 function goTo (section, transitionType) {
-    //$.get(section.html, section.load);
     $("#cntBody").load(section.html + "  .container", section.initialize);
+    justChangePage = true;
+    History.pushState(null, null, section.html);
 }
 function loadContent (section, target, where, success) {
     $(where).load(section.html + " " + target, success);
@@ -153,13 +198,13 @@ function callService(Type, urlServicemethod, Data, SuccessFunction) {
         dataType: DataType,
         processdata: ProcessData,
         timeout: 90000, // un minuto y medio de timeout
-        beforeSend: function(XMLHttpRequest) {
-            //Loader.ShowLoading();
+        beforeSend: function (XMLHttpRequest) {
+            //loader.showLoading();
         },
-        success: function(response) {
-            Loader.CloseLoading();
+        success: function (response) {
+            loader.closeLoading();
             var JSONresponse = JSON.parse(response);
-            switch(JSONresponse.status) {
+            switch (JSONresponse.status) {
                 case "ok":
                     // funcionamiento correcto
                     SuccessFunction(JSONresponse);
@@ -171,7 +216,8 @@ function callService(Type, urlServicemethod, Data, SuccessFunction) {
                     break;
                 case "auth-error":
                     // error de autenticacion o token vencido
-                    localStorage.removeItem("AuthToken");
+                    logout();
+                    popupMsg.error("Debe estar logeado para realizar esa accion.");
                     break;
                 case "warning":
                     // error/advertencia deberia indicarle algo al usuario
@@ -183,13 +229,13 @@ function callService(Type, urlServicemethod, Data, SuccessFunction) {
                     break;
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            Loader.CloseLoading();
-            if(textStatus === "timeout") {
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            loader.closeLoading();
+            if (textStatus === "timeout") {
                 // Atrapar errores de comunicacion para decirle que debe estar conectado a internet 
                 popupMsg.error("Al parecer tu conexion a Internet se ha perdido o es muy lenta, intentalo nuevamente mas tarde.");
             } else if (textStatus === "error") {
-                if(!navigator.onLine) {
+                if (!navigator.onLine) {
                     // Atrapar errores de comunicacion para decirle que debe estar conectado a internet 
                     popupMsg.error("Debes estar conectado a Internet continuar.");
                 } else {
@@ -286,6 +332,13 @@ var services = {
             method = "EditPassword";
             urlServicemethod = this.serviceURL + method;
             callService(type, urlServicemethod, data, Success);
+        },
+        confirmTarifa: function (data, Success) {
+            var type, method, urlServicemethod;
+            type = "POST";
+            method = "BuyTarifa";
+            urlServicemethod = this.serviceURL + method;
+            callService(type, urlServicemethod, data, Success);
         }
     }
 
@@ -302,7 +355,16 @@ $(document).ready(function () {
     initCurrentSection();
 });
 function getCurrentSection(sSection) {
-    var section;
+    var state = History.getState(), sSection = null, section;
+    if(state !== null) {
+        if(state.hash.indexOf("/") === 0) {
+            sSection = state.hash.substr(1);
+        } else {
+            sSection = state.hash;
+        }
+    } else {
+        sSection = defaultSectionHTML;
+    }
     for (section in sections) {
         section = sections[section];
         if (section.html === sSection) {
@@ -313,13 +375,17 @@ function getCurrentSection(sSection) {
     }
     return section;
 }
-function initCurrentSection() { 
-    var sSection = utils.getFileName();
-    if(sSection === null) {
-        sSection = defaultSectionHTML;
+function initCurrentSection() {
+    var section = getCurrentSection();
+    if(section !== null) {
+        section.initialize();
+    } else {
+        initHeader();
     }
-    var section = getCurrentSection(sSection);
-    section.initialize();
+}
+function goToCurrentSection() {
+    var section = getCurrentSection();
+     $("#cntBody").load(section.html + "  .container", section.initialize);
 }
 
 function initHeader() { 
@@ -327,17 +393,18 @@ function initHeader() {
     $("#btnOpenDdUser").on("click", dropdownUserOpen);
     $("#btnCloseDdUser").on("click", dropdownUserClose);
     $("#btnLogoutHeader").on("click", logout);
-    $("#btnLoginHeader").on("click", loginHeader);
-    $("#btnAddUserHeader").on("click", function(){ goTo(sections.register); } );
+    $("#btnLoginHeader").on("click", submitLoginHeader);
+    $("#btnAddUserHeader").on("click", loadRegister);
 }
 function initImpo() {
     initHeader();
-    $("#btnRegisterAside").on("click", function(){ goTo(sections.expo); });
-    $("#btnLoginAside").on("click", loginAside);
+    $("#btnRegisterAside").on("click", loadRegister);
+    $("#btnLoginAside").on("click", submitLoginAside);
     $("#txtFecha").datepicker({ minDate: 0 });
     $("#selTipoCarga").on("change", toogleContenedores);
     $("#nextStep").on("click", searchTarifas);
     $("#lnkPaso2").on("click", searchTarifas);
+    $("#lnkPaso3").on("click", function(e){ return false; });
     $("#btnFCLAgregar").on("click", addFCLItem);
     $("#btnLCLAgregar").on("click", addLCLItem);
     $("#tblFCLItems button.btn-eliminar").live("click", deleteFCLItem);
@@ -369,55 +436,103 @@ function initImpoResults() {
     loadSearch();
     loadResults();
 }
+function initImpoConfirm() {
+    initHeader();
+    loadSelectedResult();
+}
 function initHome() {
     initHeader();
+}
+function initRegister() {
+    $("#btnRegisterDialog").on("click", submitRegister);
 }
 
 // Authentication, login, register
 function getToken() {
     return localStorage.getItem("AuthToken");
 }
-function JustGetToken() {
-    // Se debe utilizar solo en el login
-    return localStorage.getItem("AuthToken");
-}
 var auth = function() {
-    return { Token: getToken(), AppVersion: appVersion };
+    return { Token: getToken(), AppVersion: appVersion, Device: deviceUA };
 };
 function logout() { 
     localStorage.removeItem("AuthToken");
-    goTo(sections.home);
+    local.remove("user");
+    toogleUserLoginMenus();
 }
-function loginHeader(e) {
-    var user = JSON.stringify({ 
-        User: {
-            Email: $("#txtEmailHeader").val(),
-            Password: $("#txtEmailHeader").val()
-        }
+function loadRegister() {
+    $.get(sections.register.html, function(sHtml) {
+        $("#cntBody").append(sHtml);
+        sections.register.initialize();
     });
-    services.common.login(user, function () { });
-    e.preventDefault();
-    e.stopPropagation();
 }
-function loginAside(e) {
+function submitLoginHeader(e) {
+    submitLogin($("#txtEmailHeader").val(), $("#txtPasswordHeader").val());
+    return false;
+}
+function submitLoginAside(e) {
+    submitLogin($("#txtEmailAside").val(), $("#txtPasswordAside").val());
+    return false;
+}
+function submitLogin(mail, pass) {
+    if(mail === "" || pass === "") {
+        popupMsg.error("Debes escribir un email y passwor valido.");
+        return;
+    }
     var user = JSON.stringify({ 
-        User: {
-            Email: $("#txtEmailAside").val(),
-            Password: $("#txtEmailAside").val()
-        }
+        email: mail,
+        password: pass
     });
-    services.common.login(user, function () { });
-    e.preventDefault();
-    e.stopPropagation();
+    services.common.login(user, function (response) {
+        localStorage.setItem("AuthToken", response.msg);
+        setLogged();
+    });
+}
+function submitRegister() {
+    var name = $("#txtNameRegDlg").val(), lastName = $("#txtLastNameRegDlg").val(), email = $("#txtEmailRegDlg").val(), pass = $("#txtPassRegDlg").val(), pass2 = $("#txtPassRegDlg2").val(), valid = true;
+    if(name === "" || lastName === "" || email === "" || pass === "" || pass2 === "") {
+        valid = false;
+        popupMsg.error("Debes completar todos los campos.");
+        return;
+    }
+    if(utils.validation.email(email)) {
+        valid = false;
+        popupMsg.error("Debes escribir un email valido.");
+        return;
+    }
+    if(pass !== pass2) {
+        valid = false;
+        popupMsg.error("Las contraseñas deben coincidir.");
+        return;
+    }
+    if(valid) {
+        var userData = {
+            Nombre: name,
+            Apellido: lastName,
+            Email: email,
+            Password: pass
+        };
+        local.set(userData, "user", 30);
+        services.common.register(JSON.stringify({ user: userData}), function(response) {
+            var msg = JSON.parse(response.msg);
+            localStorage.setItem("AuthToken", msg.hash);
+            setLogged();
+            popupMsg.success(msg.message);
+        });
+    }
+}
+function setLogged() {
+    toogleUserLoginMenus();
+    $(".dialog-box").remove();
 }
 
 // DOM manipulation functions
 function toogleUserLoginMenus() { 
     if(getToken() !== null) {
-        $("#userEmailHeader").val(local.user.get().Email);
+        $("#userEmailHeader").html(local.get("user").Email);
         $("#cntLoginHeader").css("display", "none");
         $("#cntUserHeader").css("display", "block");
         $("#cntLoginAside").css("display", "none");
+        dropdownUserClose();
     } else {
         $("#cntLoginHeader").css("display", "block");
         $("#cntUserHeader").css("display", "none");
@@ -593,8 +708,7 @@ function addFCLItem() {
 }
 function deleteFCLItem(e) {
     $(this).parent().parent().remove();
-    e.preventDefault();
-    e.stopPropagation();
+    return false;
 }
 function addLCLItem() {
     var cant = $("#txtLCLCantidad").val();
@@ -610,8 +724,7 @@ function addLCLItem() {
 }
 function deleteLCLItem() {
     $(this).parent().parent().remove();
-    e.preventDefault();
-    e.stopPropagation();
+    return false;
 }
 function searchTarifas(e) {
     if (searchIsValid()) {
@@ -645,8 +758,7 @@ function searchTarifas(e) {
     } else {
         popupMsg.error("Debe completar todo los datos del formulario para continuar");
     }
-    e.preventDefault();
-    e.stopPropagation();
+    return false;
 }
 function searchIsValid() {
     var valid = true;
@@ -673,7 +785,7 @@ function searchIsValid() {
     return valid;
 }
 function loadSearch() {
-    item = local.get("search");
+    var item = local.get("search");
     if (item !== null) {
         $("#txtFecha").val(item.FechaSalida);
         $("#selTipoCarga").val(item.Tipo);
@@ -686,7 +798,7 @@ function loadSearch() {
 }
 function loadResults() {
     $.get("items/result.html", function (sHtml) {
-        var items = local.get("searchResults"), i, total = items.length, cnt = $("#cntSearchResults"), search = local.get("search"); ;
+        var items = local.get("searchResults"), i, total = items.length, cnt = $("#cntSearchResults"), search = local.get("search");
         for (i = 0; i < total; i++) {
             var newSHtml = sHtml;
             newSHtml = newSHtml.replace(/%origen%/gi, search.Origen);
@@ -694,6 +806,7 @@ function loadResults() {
             newSHtml = replaceVars(newSHtml, items[i]);
             $(cnt).append(newSHtml);
         }
+        $("input[name='btnComprar']").click(comprarTarifario);
     });
 }
 function replaceVars(sHtml, item) {
@@ -716,4 +829,38 @@ function replaceVars(sHtml, item) {
         }
     }
     return sHtml;
+}
+function comprarTarifario(){
+    var idTarifario = parseInt($(this).attr("id").split("-")[1], 10);
+    
+    local.set(local.getByPropVal("searchResults",null, idTarifario), "selectTarifario");
+    goTo(sections.impoConfirm);
+}
+function loadSelectedResult() {
+    $.get("items/tarifa.html", function (sHtml) {
+        var items = local.get("selectTarifario"), i, total = items.length, cnt = $("#cntResultTarifa"), search = local.get("search");
+        var newSHtml = sHtml;
+        newSHtml = newSHtml.replace(/%fechaSalida%/gi, search.FechaSalida);
+        newSHtml = newSHtml.replace(/%origen%/gi, search.Origen);
+        newSHtml = newSHtml.replace(/%destino%/gi, search.Destino);
+        var sContenedores = "";
+        for(var j = 0; j < search.TipoCantidades.length; j++) {
+            sContenedores += "<p><label>" + search.TipoCantidades[j].Key + "</label> <label>Contenedores</label> de <label>" + search.TipoCantidades[j].Value + "</label></p>";
+        }
+        newSHtml = newSHtml.replace(/%contenedores%/gi, sContenedores);
+        newSHtml = replaceVars(newSHtml, items);
+        $(cnt).html(newSHtml);
+        $("input[name='btnConfirmarCompra']").click(submitUserTarifario);
+    });
+}
+function submitUserTarifario() {
+    var idTarifario = $(this).attr("id").split("-")[1];
+    services.user.confirmTarifa(JSON.stringify({ auth: auth(), idTarifa: idTarifario }), function (response) {
+        popupMsg.success(response.msg);
+        local.remove("selectTarifario");
+        local.remove("searchResults");
+        local.remove("search");
+        goTo(sections.home);
+    });
+    return false;
 }

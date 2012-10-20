@@ -15,6 +15,7 @@
         <script src="js/libs/modernizr.custom.98935.js"></script>
         <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="js/libs/jquery-ui-1.8.24.custom.min.js"></script><!--datepicker-->
+        <script type="text/javascript" src="js/libs/jquery.history.js"></script>
         <script type="text/javascript" src="js/config.js"></script>
         <script type="text/javascript" src="js/utils.js"></script>
         <script type="text/javascript" src="js/mainController.js"></script>
@@ -74,7 +75,7 @@
                         <ul class="float-left">
                             <li class="btn-paso1 btn-paso1-active"><a href="importacion.html">Formulario de cotización</a></li>
                             <li class="btn-paso2"><a id="lnkPaso2" href="importacion-transportes.html">Transportes disponibles</a></li>
-                            <li class="btn-paso3"><a href="importacion-confirmacion.html">Confirmación de compra</a></li>
+                            <li class="btn-paso3"><a id="lnkPaso3" href="importacion-confirmacion.html">Confirmación de compra</a></li>
                         </ul>
                         <div class="clear"></div>
                     </nav>
@@ -213,21 +214,6 @@
             <div class="clear"></div>
         </footer>
         <!--end FOOTER-->
-    </div><!--end container-->
-    <!-- ui-dialog -->
-    <div id="dialog" title="Registrar usuario">
-        <h6>Nombre</h6>
-        <input type="text" autofocus="true">
-        <h6>Apellido</h6>
-        <input type="text">
-        <h6>E-mail</h6>
-        <input type="email">
-        <h6>Contraseña</h6>
-        <input type="password">
-        <h6>Repetir contraseña</h6>
-        <input type="password">  
-    </div>
-    <!-- end ui-dialog -->
     </div><!--end container-->
     </body>
 </html>

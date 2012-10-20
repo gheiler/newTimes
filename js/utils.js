@@ -171,21 +171,21 @@ var accentMap = {
 };
 var popupMsg = {
     success: function(msg) {
-        Loader.CloseLoading();
+        loader.closeLoading();
         /*$('#msgContainer').html(GetMsgHTML());
         $('#errMessage').html(msg);*/
         // fue, sale aaaaaaaalerrrrrt
         alert(msg);
     },
     error: function(msg) {
-        Loader.CloseLoading();
+        loader.closeLoading();
         /*$('#msgContainer').html(GetMsgHTML());
         $('#errMessage').html(msg);*/
         // fue, sale aaaaaaaalerrrrrt
         alert(msg);
     },
     warning: function(msg) {
-        Loader.CloseLoading();
+        loader.closeLoading();
         alert(msg);
     },
     close: function() {
@@ -292,17 +292,17 @@ if (!window.localStorage) {
 }
 
 // VISUALES: efects, progress functions, etc
-var Loader = {
-    ShowLoading: function () {
+var loader = {
+    showLoading: function () {
         var spinner = $('#loadSpinner');
         if (!$("#loadSpinner").length) {
-            $('#loadingContainer').html(Loader.GetSpinner());
+            $('#loadingContainer').html(this.getSpinner());
         }
     },
-    CloseLoading: function () {
+    closeLoading: function () {
         $('#loadingContainer').empty();
     },
-    GetSpinner: function () {
+    getSpinner: function () {
         return "<div id='loadSpinner' style='display: block!important' class='ui-loader ui-corner-all ui-body-a ui-loader-default'><span class='ui-icon ui-icon-loading'></span><h1>Cargando...</h1></div>";
     }
 }

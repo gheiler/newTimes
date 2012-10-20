@@ -1,0 +1,53 @@
+<div class="container-padding bg-gray">
+    <div class="width-49 float-left">
+        <h5>ORDEN DE IMPORTACIÓN #<label>%idOrden%</label></h5>
+        <p>ORIGEN: <label>%origen%</label></p>
+        <p>DESTINO: <label>%destino%</label></p>
+        <p>FECHA: <label>%fechaSalida%</label></p>
+    </div>
+    <div class="width-49 float-left">
+        <div class="confirmacion-NTLdata">
+            <p>www.newtimelogistics.com</p>
+            <p>Asesoría virtual en Logística Internacional</p>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<div class="container-padding">
+    <div class="width-49 float-left">
+        <h5>Datos del transporte</h5>
+        <p>Línea: <label>%carrier%</label></p>
+        <p>Tel: <label>%telefono%</label></p>
+        <p>Web: <a href="#" target="_blank">%url%</a></p>
+        <p>Dirección: <label>%direccion%</label></p>
+    </div>
+    <div class="width-49 float-left">
+        <h5>Cantidad</h5>
+        %contenedores%
+    </div>
+    <div class="clear"></div>
+    <h5>Detalle</h5>
+    <table class="results">
+        <tr>
+            <td>Flete</td>
+            <td>Destino</td>
+            <td>Días libres</td>
+            <td>Escala</td>
+            <td>Terminal</td>
+            <td>Validez</td>
+        </tr>
+        <tr>
+            <td>%origen%</td>
+            <td>%destino%</td>
+            <td>%freeDays%</td>
+            <td>%escala%</td>
+            <td>%terminal%</td>
+            <td>%fechaHasta%</td>
+        </tr>
+    </table>
+</div>
+<div class="container-padding bg-gray">
+    <h5 class="total">TOTAL: <label>US $</label> <label>%importe%</label></h5>
+</div>
+<input id="btnComprar-%idTarifario%" name="btnConfirmarCompra" type="submit" value="Confirmar" class="float-right">
+<div class="clear"></div>

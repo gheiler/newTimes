@@ -7,39 +7,42 @@
     <meta name="keywords" content="New Time Logistics, Transporte, Importación, Exportación, Logística, Internacional, Marítimo, Búsqueda, Comparación">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- css -->
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-    <link href="css/normalize.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-      <!--<link href="css/responsive.css" rel="stylesheet">-->
+    <link type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet">
+    <link type="text/css" href="css/normalize.css" rel="stylesheet">
+    <link type="text/css" href="css/custom-theme/jquery-ui-1.8.24.custom.css" rel="stylesheet">
+    <link type="text/css" href="css/style.css" rel="stylesheet">
     <!-- scripts -->
-    <script type="text/javascript" src="js/libs/modernizr.custom.98935.js"></script>
+    <script src="js/libs/modernizr.custom.98935.js"></script>
     <script type="text/javascript" src="js/libs/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery-ui-1.8.24.custom.min.js"></script><!--datepicker-->
+    <script type="text/javascript" src="js/libs/jquery.history.js"></script>
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/utils.js"></script>
     <script type="text/javascript" src="js/mainController.js"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </head>
   <body>
     <div class="container">
     <!--HEADER-->
       <header class="header-index">
         <div class="header">
-          <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
-          <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
-          <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
-          <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
-           <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
-                <h6>E-mail</h6>
-                <input type="email">
-                <h6>Contraseña</h6>
-                <input type="password">
-                <input id="btnLoginHeader" type="submit" value="Ingresar">
-                <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
-            </form>
-            <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
-                <p id="userEmailHeader">usuario@mail.com</p><!--Dato: Mail del usuario-->
-                <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+            <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+            <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
+            <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
+            <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
+                <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
+                    <h6>E-mail</h6>
+                    <input id="txtEmailHeader" type="email">
+                    <h6>Contraseña</h6>
+                    <input id="txtPasswordHeader" type="password">
+                    <input id="btnLoginHeader" type="submit" value="Ingresar">
+                    <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
+                </form>
+                <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
+                    <p id="userEmailHeader"></p><!--Dato: Mail del usuario-->
+                    <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+                </div>
             </div>
-          </div>
         </div>
         <div class="clear"></div>
         <nav>
