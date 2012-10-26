@@ -75,7 +75,7 @@
                         <ul class="float-left">
                             <li class="btn-paso1"><a href="importacion.html">Formulario de cotización</a></li>
                             <li class="btn-paso2 btn-paso2-active"><a href="importacion-transportes.html">Transportes disponibles</a></li>
-                            <li class="btn-paso3"><a href="importacion-confirmacion.html">Confirmación de compra</a></li>
+                            <li class="btn-paso3"><a href="javascript:;">Confirmación de compra</a></li>
                         </ul>
                         <div class="clear"></div>
                     </nav>
@@ -93,9 +93,9 @@
                                             Ordenar&nbsp;
                                             <img src="img/dropdown-arrow.png" alt="dropdown">
                                         </button>
-                                        <div class="dropdown dd-ordenar">
-                                            <a href="#">Menor precio</a>
-                                            <a href="#">Meyor precio</a>
+                                        <div id="cntOrder" class="dropdown dd-ordenar">
+                                            <a data-value="minorPrice" href="javascript:;">Menor precio</a>
+                                            <a data-value="mayorPrice" href="javascript:;">Mayor precio</a>
                                         </div>
                                     </div>
                                 </div>
@@ -105,9 +105,9 @@
                                             Moneda&nbsp;
                                             <img src="img/dropdown-arrow.png" alt="dropdown">
                                         </button>
-                                        <div class="dropdown dd-moneda">
-                                            <a href="#">US $</a>
-                                            <a href="#">AR $</a>
+                                        <div id="cntMoney" class="dropdown dd-moneda">
+                                            <a data-value="USD" href="javascript:;">US $</a>
+                                            <a data-value="ARS" href="javascript:;">AR $</a>
                                         </div>
                                     </div>
                                 </div>
@@ -199,7 +199,7 @@
                                 </table>
                             </div>
                             <!--end LCL-->
-                            <hr>
+                            <!--<hr>
                             <h6>Líneas</h6>
                             <input type="checkbox"><label>Línea 1</label><br>
                             <input type="checkbox"><label>Línea 2</label><br>
@@ -221,7 +221,7 @@
                             <h6>Días libres</h6>
                             <input type="checkbox"><label>Si</label><br>
                             <input type="checkbox"><label>No</label><br>
-                            <hr>
+                            <hr>-->
                             <input id="btnAsideSearch" type="submit" value="Buscar">
                             <input type="reset" value="Nueva búsqueda" class="btn-link">
                         </form>

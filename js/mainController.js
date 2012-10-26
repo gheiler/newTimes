@@ -1,5 +1,13 @@
 // Global vars
 var itemsDaysToExpire = 1, defaultSectionHTML = "index.html", selectedOrigen = null, selectedDestino = null, justChangePage = false;
+var currencies = {
+    USD: {
+        ARS: 4.72
+    },
+    ARS: {
+        USD: 0.211864406779661
+    }
+};
 
 // plugin configs
 jQuery(function($){
@@ -108,8 +116,8 @@ var local = { // De momento usamos localStorage, recordar que si el navegador no
             this.set(item);
         }
     },
-    remove: function (item) {
-        var items = this.get();
+    removeItem: function (item, id) {
+        var items = this.get(item);
         if (items !== null) {
             var i, total = items.length;
             for (i = 0; i < total; i++) {
@@ -121,7 +129,7 @@ var local = { // De momento usamos localStorage, recordar que si el navegador no
             }
         }
     },
-    reset: function (key) {
+    remove: function (key) {
         localStorage.removeItem(key);
     },
     getByPropVal: function (key, prop, val) {
@@ -183,31 +191,35 @@ function loadContent (section, target, where, success) {
 }
 
 // Services
-function callService(Type, urlServicemethod, Data, SuccessFunction) {
-    var Url, ContentType, DataType, ProcessData;
-    Url = servicesURL + urlServicemethod;
-    ContentType = "application/json; charset=utf-8";
-    DataType = "json";
-    ProcessData = true;
+function callService(type, urlServicemethod, data, successFunction, contentType, processData) {
+    var url, contentType, dataType, processData;
+    url = servicesURL + urlServicemethod;
+    if (typeof contentType == "undefined") {
+        contentType = "application/json; charset=utf-8";
+    }
+    if(typeof contentType == "undefined") {
+        processData = true;
+    }
+    dataType = "json";
 
     $.ajax({
-        type: Type,
-        url: Url,
-        data: Data,
-        contentType: ContentType,
-        dataType: DataType,
-        processdata: ProcessData,
+        type: type,
+        url: url,
+        data: data,
+        contentType: contentType,
+        dataType: dataType,
+        processdata: processData,
         timeout: 90000, // un minuto y medio de timeout
         beforeSend: function (XMLHttpRequest) {
-            //loader.showLoading();
+            //loader.show();
         },
         success: function (response) {
-            loader.closeLoading();
+            loader.close();
             var JSONresponse = JSON.parse(response);
             switch (JSONresponse.status) {
                 case "ok":
                     // funcionamiento correcto
-                    SuccessFunction(JSONresponse);
+                    successFunction(JSONresponse);
                     break;
                 case "error":
                     // errores controlados desde el servidor
@@ -225,12 +237,12 @@ function callService(Type, urlServicemethod, Data, SuccessFunction) {
                     break;
                 default:
                     // tipos no definidos que maneja el Success
-                    SuccessFunction(JSONresponse);
+                    successFunction(JSONresponse);
                     break;
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            loader.closeLoading();
+            loader.close();
             if (textStatus === "timeout") {
                 // Atrapar errores de comunicacion para decirle que debe estar conectado a internet 
                 popupMsg.error("Al parecer tu conexion a Internet se ha perdido o es muy lenta, intentalo nuevamente mas tarde.");
@@ -268,6 +280,7 @@ var services = {
             callService(type, urlServicemethod, user, Success);
         },
         getTarifas: function (data, Success) {
+            loader.show();
             var type, method, urlServicemethod;
             type = "POST";
             method = "GetTarifasBySearch";
@@ -339,6 +352,14 @@ var services = {
             method = "BuyTarifa";
             urlServicemethod = this.serviceURL + method;
             callService(type, urlServicemethod, data, Success);
+        },
+        uploadFile: function (data, Success) {
+            var type, method, urlServicemethod;
+            type = "POST";
+            method = "/upload.ashx";
+            urlServicemethod = method;
+            var formData = new FormData($('form')[0]);
+            callService(type, urlServicemethod, data, Success, false, false);
         }
     }
 
@@ -426,6 +447,8 @@ function initImpoResults() {
     $("#btnLCLAgregar").on("click", addLCLItem);
     $("#tblFCLItems button.btn-eliminar").live("click", deleteFCLItem);
     $("#tblLCLItems button.btn-eliminar").live("click", deleteLCLItem);
+    $("#cntOrder a").on("click", orderResults);
+    $("#cntMoney a").on("click", currencyResults);
 
     toogleContenedores();
     loadFCLCapacidades();
@@ -482,6 +505,10 @@ function submitLogin(mail, pass) {
         email: mail,
         password: pass
     });
+    var userData = { 
+        Email: mail
+    };
+    local.set(userData, "user", 30);
     services.common.login(user, function (response) {
         localStorage.setItem("AuthToken", response.msg);
         setLogged();
@@ -549,48 +576,7 @@ function dropdownUserClose() {
     document.getElementById("btnOpenDdUser").style.display="inline";
     document.getElementById("btnCloseDdUser").style.display="none";
 }
-function filterOrigen(e) {
-    var filterText = $("#txtOrigen").val();
-    if (filterText.length > 0) {
-        var items = local.get("origen"), total = items.length, i, totalVisible = 0;
-        for(i = 0; i < total; i++) {
-            if (items[i].Puerto.toLowerCase().search(filterText) >= 0 || items[i].Pais.toLowerCase().search(filterText) >= 0) {
-                $("#origenItem-" + items[i].IDPuerto).css("display", "block");
-                totalVisible++;
-            } else { 
-                $("#origenItem-" + items[i].IDPuerto).css("display", "none");
-            }
-        }
-        if (totalVisible > 0) {
-            $("#origenFilterList").show();
-        } else { 
-            $("#origenFilterList").hide();
-        }
-    } else { 
-        $("#origenFilterList").hide();
-    }
-}
-function filterDestino(e) {
-    var filterText = $("#txtDestino").val();
-    if (filterText.length > 0) {
-        var items = local.get("destino"), total = items.length, i, totalVisible = 0;
-        for(i = 0; i < total; i++) {
-            if (items[i].Puerto.toLowerCase().search(filterText) >= 0 || items[i].Pais.toLowerCase().search(filterText) >= 0) {
-                $("#destinoItem-" + items[i].IDPuerto).css("display", "block");
-                totalVisible++;
-            } else { 
-                $("#destinoItem-" + items[i].IDPuerto).css("display", "none");
-            }
-        }
-        if (totalVisible > 0) {
-            $("#destinoFilterList").show();
-        } else { 
-            $("#destinoFilterList").hide();
-        }
-    } else { 
-        $("#destinoFilterList").hide();
-    }
-}
+
 function loadFCLCapacidades() {
     var items = local.get("capacidades");
     if(items !== null) {
@@ -636,6 +622,7 @@ function toogleContenedores() {
         $("#cntLCLContenedores").show();
     }
 }
+
 function loadOrigenes(response) {
     var items = local.get("origen");
     if (items !== null) {
@@ -682,6 +669,48 @@ function loadDestinosItems(items) {
     $("#txtDestino").on("keyup", filterDestino);
     $(ul).children().on("click", selectDestino);
 }
+function filterOrigen(e) {
+    var filterText = $("#txtOrigen").val();
+    if (filterText.length > 0) {
+        var items = local.get("origen"), total = items.length, i, totalVisible = 0;
+        for(i = 0; i < total; i++) {
+            if (items[i].Puerto.toLowerCase().search(filterText) >= 0 || items[i].Pais.toLowerCase().search(filterText) >= 0) {
+                $("#origenItem-" + items[i].IDPuerto).css("display", "block");
+                totalVisible++;
+            } else { 
+                $("#origenItem-" + items[i].IDPuerto).css("display", "none");
+            }
+        }
+        if (totalVisible > 0) {
+            $("#origenFilterList").show();
+        } else { 
+            $("#origenFilterList").hide();
+        }
+    } else { 
+        $("#origenFilterList").hide();
+    }
+}
+function filterDestino(e) {
+    var filterText = $("#txtDestino").val();
+    if (filterText.length > 0) {
+        var items = local.get("destino"), total = items.length, i, totalVisible = 0;
+        for(i = 0; i < total; i++) {
+            if (items[i].Puerto.toLowerCase().search(filterText) >= 0 || items[i].Pais.toLowerCase().search(filterText) >= 0) {
+                $("#destinoItem-" + items[i].IDPuerto).css("display", "block");
+                totalVisible++;
+            } else { 
+                $("#destinoItem-" + items[i].IDPuerto).css("display", "none");
+            }
+        }
+        if (totalVisible > 0) {
+            $("#destinoFilterList").show();
+        } else { 
+            $("#destinoFilterList").hide();
+        }
+    } else { 
+        $("#destinoFilterList").hide();
+    }
+}
 function selectOrigen() {
     $("#txtOrigen").val($(this).text());
     $("#origenFilterList").hide();
@@ -694,12 +723,22 @@ function selectDestino() {
     selectedDestino = parseInt($(this).attr("id").split("-")[1], 10);
     $("#txtFecha").focus();
 }
-function addFCLItem() {
-    var cant = $("#txtFCLCantidad").val();
+
+function addFCLItem(e, tipo, cant) {
+    if(typeof tipo == "undefined") {
+        tipo = $("#selFCLCapacidad option:selected").val();
+    }
+    if(typeof cant == "undefined") {
+        cant = $("#txtFCLCantidad").val();
+    }
+    var tipoText = $("#selFCLCapacidad option[value='" + tipo + "']").text();
+
+    $("#tblFCLItems > tbody tr[id='fclItemId-" + tipo + "']").remove();
+
     if (!isNaN(parseFloat(cant))) {
-        $("#tblFCLItems > tbody:last").append('<tr id="fclItemId-' + $("#selFCLCapacidad option:selected").val() + '" data-cant="' + cant + '" >' +
+        $("#tblFCLItems > tbody:last").append('<tr id="fclItemId-' + tipo + '" data-cant="' + cant + '" >' +
             '<td><button class="btn-eliminar" title="Eliminar"><img src="img/btn-eliminar.png" alt="Eliminar"></button></td>' +
-            '<td><label>' + cant + '</label> contenedores de <label>' + $("#selFCLCapacidad option:selected").text() + '</label></td>' +
+            '<td><label>' + cant + '</label> contenedores de <label>' + tipoText + '</label></td>' +
             '</tr>');
         $("#txtFCLCantidad").val("");
     } else {
@@ -726,6 +765,7 @@ function deleteLCLItem() {
     $(this).parent().parent().remove();
     return false;
 }
+
 function searchTarifas(e) {
     if (searchIsValid()) {
         var items, i, cant = [], search;
@@ -793,12 +833,21 @@ function loadSearch() {
         selectedOrigen = item.IDPuertoOrigen;
         $("#txtOrigen").val(item.Origen);
         $("#txtDestino").val(item.Destino);
-        // TODO: load cants
+        if (item.TipoCantidades.length > 0) {
+            for(var i = 0; i < item.TipoCantidades.length; i++){
+                if (item.Tipo.toLowerCase() === "fcl") {
+                    addFCLItem(null, item.TipoCantidades[i].Key, item.TipoCantidades[i].Value);
+                } else { 
+                    addLCLItem(null, item.TipoCantidades[i].Key, item.TipoCantidades[i].Value);
+                }
+            }
+        }
     }
 }
 function loadResults() {
     $.get("items/result.html", function (sHtml) {
         var items = local.get("searchResults"), i, total = items.length, cnt = $("#cntSearchResults"), search = local.get("search");
+        $(cnt).empty();
         for (i = 0; i < total; i++) {
             var newSHtml = sHtml;
             newSHtml = newSHtml.replace(/%origen%/gi, search.Origen);
@@ -830,6 +879,45 @@ function replaceVars(sHtml, item) {
     }
     return sHtml;
 }
+function currencyResults() {
+    var importes = $("[data-name='result-importe']");
+    var selectedCurrency = $(this).attr("data-value");
+    if(importes.length > 0) {
+        var currentCurrency = $(importes[0]).attr("data-value");
+        var multiplier = getCurrencyMultiplier(currentCurrency, selectedCurrency);
+        if (selectedCurrency != currentCurrency) {
+            for (var i = 0; i < importes.length; i++) {
+                var currentImporte = parseFloat($(importes[i]).children("span[data-name='importe']").html());
+                $(importes[i]).attr("data-value", selectedCurrency);
+                $(importes[i]).children("span[data-name='importe']").html(currentImporte * multiplier);
+                $(importes[i]).children("span[data-name='currency']").html(selectedCurrency + " ");
+            }
+        }
+    }
+    return false;
+}
+function orderResults() {
+    var type = $(this).attr("data-value"), results = local.get("searchResults");
+    switch(type) {
+        case "minorPrice":
+            results.sort(function (a, b) {
+                return a.Importe - b.Importe;
+            });
+            break;
+        case "mayorPrice":
+            results.sort(function (a, b) {
+                return b.Importe - a.Importe;
+            });
+            break;
+    }
+    local.set(results, "searchResults");
+    loadResults();
+    return false;
+}
+function getCurrencyMultiplier(from, to) {
+    return currencies[from][to];
+}
+
 function comprarTarifario(){
     var idTarifario = parseInt($(this).attr("id").split("-")[1], 10);
     
@@ -855,7 +943,8 @@ function loadSelectedResult() {
 }
 function submitUserTarifario() {
     var idTarifario = $(this).attr("id").split("-")[1];
-    services.user.confirmTarifa(JSON.stringify({ auth: auth(), idTarifa: idTarifario }), function (response) {
+    var message = $("#txtMessageTar").val();
+    services.user.confirmTarifa(JSON.stringify({ auth: auth(), idTarifa: idTarifario, msg: message ,fileName: "" }), function (response) {
         popupMsg.success(response.msg);
         local.remove("selectTarifario");
         local.remove("searchResults");
@@ -864,3 +953,11 @@ function submitUserTarifario() {
     });
     return false;
 }
+
+$('#filDocTar').change(function () {
+    var file = this.files[0];
+    services.user.uploadFile(file, function (response) {
+        // TODO: do somenthing
+    });
+
+});

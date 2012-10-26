@@ -171,21 +171,21 @@ var accentMap = {
 };
 var popupMsg = {
     success: function(msg) {
-        loader.closeLoading();
-        /*$('#msgContainer').html(GetMsgHTML());
+        loader.close();
+        /*$("body").append(getSuccessHTML());
         $('#errMessage').html(msg);*/
-        // fue, sale aaaaaaaalerrrrrt
+        // si no hay maqueta sale alert
         alert(msg);
     },
     error: function(msg) {
-        loader.closeLoading();
-        /*$('#msgContainer').html(GetMsgHTML());
-        $('#errMessage').html(msg);*/
-        // fue, sale aaaaaaaalerrrrrt
+        loader.close();
+        /*$("body").append(getErrorHTML());
+        $('#sucMessage').html(msg);*/
+        // si no hay maqueta sale alert
         alert(msg);
     },
     warning: function(msg) {
-        loader.closeLoading();
+        loader.close();
         alert(msg);
     },
     close: function() {
@@ -293,16 +293,17 @@ if (!window.localStorage) {
 
 // VISUALES: efects, progress functions, etc
 var loader = {
-    showLoading: function () {
-        var spinner = $('#loadSpinner');
+    show: function () {
+        /*var spinner = $('#loadSpinner');
         if (!$("#loadSpinner").length) {
             $('#loadingContainer').html(this.getSpinner());
-        }
+        }*/
+        $("body").append(this.getSpinner());
     },
-    closeLoading: function () {
-        $('#loadingContainer').empty();
+    close: function () {
+        $('#loadSpinner').remove();
     },
     getSpinner: function () {
-        return "<div id='loadSpinner' style='display: block!important' class='ui-loader ui-corner-all ui-body-a ui-loader-default'><span class='ui-icon ui-icon-loading'></span><h1>Cargando...</h1></div>";
+        return "<div id='loadSpinner' style='display: block!important; position: absolute; left: 50%; top: 50%; margin-left: -16px; margin-top: -16px;'><img src='img/ajax-loader.gif'/></div>";
     }
 }
