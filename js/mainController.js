@@ -167,7 +167,6 @@ var sections = {
     },
     expo: {
         html: "exportacion.html",
-        load: loadExpo,
         initialize: function () {
             // TODO: implement
         }
@@ -196,11 +195,11 @@ function callService(type, urlServicemethod, data, successFunction, contentType,
     url = servicesURL + urlServicemethod;
     if (typeof contentType == "undefined") {
         contentType = "application/json; charset=utf-8";
+        dataType = "json";
     }
     if(typeof contentType == "undefined") {
         processData = true;
     }
-    dataType = "json";
 
     $.ajax({
         type: type,
@@ -262,6 +261,27 @@ function callService(type, urlServicemethod, data, successFunction, contentType,
         }
     });
 }
+function callServiceBackground(type, urlServicemethod, data, successFunction, contentType, processData) {
+    var url, contentType, dataType, processData;
+    url = servicesURL + urlServicemethod;
+    contentType = "application/json; charset=utf-8";
+    dataType = "json";
+    processData = true;
+
+    $.ajax({
+        type: type,
+        url: url,
+        data: data,
+        contentType: contentType,
+        dataType: dataType,
+        processdata: processData,
+        timeout: 90000,
+        success: function (response) {
+            var JSONresponse = JSON.parse(response);
+            successFunction(JSONresponse);
+        }
+    });
+}
 var services = {
     common: {
         serviceURL: "/Service/",
@@ -299,28 +319,28 @@ var services = {
             type = "GET";
             method = "GetOrigenes";
             urlServicemethod = this.serviceURL + method;
-            callService(type, urlServicemethod, "", Success);
+            callServiceBackground(type, urlServicemethod, "", Success);
         },
         getDestinos: function (Success) {
             var type, method, urlServicemethod;
             type = "GET";
             method = "GetDestinos";
             urlServicemethod = this.serviceURL + method;
-            callService(type, urlServicemethod, "", Success);
+            callServiceBackground(type, urlServicemethod, "", Success);
         },
         getCapacidades: function (Success) {
             var type, method, urlServicemethod;
             type = "GET";
             method = "GetCapacidades";
             urlServicemethod = this.serviceURL + method;
-            callService(type, urlServicemethod, "", Success);
+            callServiceBackground(type, urlServicemethod, "", Success);
         },
         getMedidas: function (Success) {
             var type, method, urlServicemethod;
             type = "GET";
             method = "GetMedidas";
             urlServicemethod = this.serviceURL + method;
-            callService(type, urlServicemethod, "", Success);
+            callServiceBackground(type, urlServicemethod, "", Success);
         }
     },
     user: {
@@ -356,19 +376,34 @@ var services = {
         uploadFile: function (data, Success) {
             var type, method, urlServicemethod;
             type = "POST";
-            method = "/upload.ashx";
-            urlServicemethod = method;
-            var formData = new FormData($('form')[0]);
-            callService(type, urlServicemethod, data, Success, false, false);
+            method = "UploadFile";
+            urlServicemethod = this.serviceURL + method;
+            var file = $("form.confirmacion")[0][1].files[0];
+            var formData = new FormData();
+            formData.append("data", file);
+            $.ajax({
+                url: servicesURL + urlServicemethod,
+                type: type,
+                xhr: function () {
+                    myXhr = $.ajaxSettings.xhr();
+                    if (myXhr.upload) { // if upload property exists
+                        //myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // progressbar
+                    }
+                    return myXhr;
+                },
+                success: Success,
+                error: errorHandler = function () {
+                    alert("Ha ocurrido un error subiendo el archivo");
+                },
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false
+            }, "json");
         }
     }
 
 };
-
-// Sections Loader
-function loadExpo(sHtml) {
-
-}
 
 // Sections Initializer
 $(document).ready(function () {
@@ -436,7 +471,7 @@ function initImpo() {
     loadLCLMedidas();
     loadDestinos();
     loadOrigenes();
-    loadSearch();
+    //loadSearch();
 }
 function initImpoResults() {
     initHeader();
@@ -578,7 +613,7 @@ function dropdownUserClose() {
 }
 
 function loadFCLCapacidades() {
-    var items = local.get("capacidades");
+    /*var items = local.get("capacidades");
     if(items !== null) {
         loadFCLCapacidadesItems(items);
     } else {
@@ -586,7 +621,12 @@ function loadFCLCapacidades() {
             loadFCLCapacidadesItems(response.msg);
             local.set(response.msg, "capacidades");
         });
-    }
+    }*/
+
+    services.common.getCapacidades(function (response) {
+        loadFCLCapacidadesItems(response.msg);
+        local.set(response.msg, "capacidades");
+    });
 }
 function loadFCLCapacidadesItems(items){
     var total = items.length, i;
@@ -596,7 +636,7 @@ function loadFCLCapacidadesItems(items){
     }
 }
 function loadLCLMedidas() { 
-    var items = local.get("medidas");
+    /*var items = local.get("medidas");
     if(items !== null) {
         loadLCLMedidasItems(items);
     } else {
@@ -604,7 +644,11 @@ function loadLCLMedidas() {
             loadLCLMedidasItems(response.msg);
             local.set(response.msg, "medidas");
         });
-    }
+    }*/
+    services.common.getMedidas(function (response) {
+        loadLCLMedidasItems(response.msg);
+        local.set(response.msg, "medidas");
+    });
 }
 function loadLCLMedidasItems(items) {
     var total = items.length, i;
@@ -624,7 +668,8 @@ function toogleContenedores() {
 }
 
 function loadOrigenes(response) {
-    var items = local.get("origen");
+    // no cache always get from server
+    /*var items = local.get("origen");
     if (items !== null) {
         loadOrigenesItems(items);
     } else {
@@ -632,7 +677,11 @@ function loadOrigenes(response) {
             local.set(response.msg, "origen");
             loadOrigenesItems(response.msg);
         });
-    }
+    }*/
+    services.common.getOrigenes(function (response) {
+        local.set(response.msg, "origen");
+        loadOrigenesItems(response.msg);
+    });
 }
 function loadOrigenesItems(items) {
     var total = items.length, i;
@@ -647,7 +696,8 @@ function loadOrigenesItems(items) {
     $(ul).children().on("click", selectOrigen);
 }
 function loadDestinos(response) {
-    var items = local.get("destino");
+    // no cache always get from server
+    /*var items = local.get("destino");
     if (items !== null) {
         loadDestinosItems(items);
     } else {
@@ -655,7 +705,11 @@ function loadDestinos(response) {
             local.set(response.msg, "destino");
             loadDestinosItems(response.msg);
         });
-    }
+    }*/
+    services.common.getDestinos(function (response) {
+        local.set(response.msg, "destino");
+        loadDestinosItems(response.msg);
+    });
 }
 function loadDestinosItems(items) {
     var total = items.length, i;
@@ -925,6 +979,7 @@ function comprarTarifario(){
     goTo(sections.impoConfirm);
 }
 function loadSelectedResult() {
+    loader.show();
     $.get("items/tarifa.html", function (sHtml) {
         var items = local.get("selectTarifario"), i, total = items.length, cnt = $("#cntResultTarifa"), search = local.get("search");
         var newSHtml = sHtml;
@@ -932,19 +987,32 @@ function loadSelectedResult() {
         newSHtml = newSHtml.replace(/%origen%/gi, search.Origen);
         newSHtml = newSHtml.replace(/%destino%/gi, search.Destino);
         var sContenedores = "";
-        for(var j = 0; j < search.TipoCantidades.length; j++) {
+        for (var j = 0; j < search.TipoCantidades.length; j++) {
             sContenedores += "<p><label>" + search.TipoCantidades[j].Key + "</label> <label>Contenedores</label> de <label>" + search.TipoCantidades[j].Value + "</label></p>";
         }
         newSHtml = newSHtml.replace(/%contenedores%/gi, sContenedores);
         newSHtml = replaceVars(newSHtml, items);
         $(cnt).html(newSHtml);
         $("input[name='btnConfirmarCompra']").click(submitUserTarifario);
+        $('#cntFileUpload').on("change", "input", function () {
+            var file = this.files[0];
+            $("#filUploading").show();
+            services.user.uploadFile(file, function (response) {
+                $("#filUploading").hide();
+                if (response.status === "not-ok") {
+                    alert(response.msg);
+                }
+            });
+        });
+        loader.close();
     });
 }
 function submitUserTarifario() {
+    loader.show();
+    var foo = local.get("selectTarifario");
     var idTarifario = $(this).attr("id").split("-")[1];
     var message = $("#txtMessageTar").val();
-    services.user.confirmTarifa(JSON.stringify({ auth: auth(), idTarifa: idTarifario, msg: message ,fileName: "" }), function (response) {
+    services.user.confirmTarifa(JSON.stringify({ auth: auth(), search: local.get("search"), tarifa: local.get("selectTarifario"), msg: message ,fileName: "" }), function (response) {
         popupMsg.success(response.msg);
         local.remove("selectTarifario");
         local.remove("searchResults");
@@ -953,11 +1021,3 @@ function submitUserTarifario() {
     });
     return false;
 }
-
-$('#filDocTar').change(function () {
-    var file = this.files[0];
-    services.user.uploadFile(file, function (response) {
-        // TODO: do somenthing
-    });
-
-});
