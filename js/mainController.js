@@ -1,5 +1,8 @@
+/// <reference path="js/libs/jquery-1.8.2-vsdoc.js" />
+/// <reference file="js/libs/jquery-1.8.2-vsdoc.js" />
+
 // Global vars
-var itemsDaysToExpire = 1, defaultSectionHTML = "index.html", selectedOrigen = null, selectedDestino = null, justChangePage = false;
+var itemsDaysToExpire = 1, defaultSectionHTML = "index.html", selectedOrigen = null, selectedDestino = null, justChangePage = false, defaultLanguage;
 var currencies = {
     USD: {
         ARS: 4.72
@@ -8,6 +11,20 @@ var currencies = {
         USD: 0.211864406779661
     }
 };
+var languages = { 
+    es: {
+        name: "es",
+        file: "lang/es.txt",
+        data: null
+    },
+    en: {
+        name: "en",
+        file: "lang/en.txt",
+        data: null
+    } 
+}
+
+defaultLanguage = languages.es;
 
 // plugin configs
 jQuery(function($){
@@ -376,9 +393,9 @@ var services = {
         uploadFile: function (data, Success) {
             var type, method, urlServicemethod;
             type = "POST";
-            method = "UploadFile";
+            method = "fileUpload.ashx";
             urlServicemethod = this.serviceURL + method;
-            var file = $("form.confirmacion")[0][1].files[0];
+            /*var file = $("form.confirmacion")[0][1].files[0];
             var formData = new FormData();
             formData.append("data", file);
             $.ajax({
@@ -399,7 +416,7 @@ var services = {
                 cache: false,
                 contentType: false,
                 processData: false
-            }, "json");
+            }, "json");*/
         }
     }
 
@@ -438,10 +455,14 @@ function initCurrentSection() {
     } else {
         initHeader();
     }
+    initCurrentLanguage();
 }
 function goToCurrentSection() {
     var section = getCurrentSection();
-     $("#cntBody").load(section.html + "  .container", section.initialize);
+    $("#cntBody").load(section.html + " .container", function () {
+        section.initialize();
+        initCurrentLanguage();
+    });
 }
 
 function initHeader() { 
@@ -451,6 +472,14 @@ function initHeader() {
     $("#btnLogoutHeader").on("click", logout);
     $("#btnLoginHeader").on("click", submitLoginHeader);
     $("#btnAddUserHeader").on("click", loadRegister);
+    $("#langEs").on("click", function () { changelanguage("es"); return false; });
+    $("#langEn").on("click", function () { changelanguage("en"); return false; });
+
+    initFooter();
+}
+function initFooter() { 
+    $("#langEsFoot").on("click", function () { changelanguage("es"); return false; });
+    $("#langEnFoot").on("click", function () { changelanguage("en"); return false; });
 }
 function initImpo() {
     initHeader();
@@ -518,8 +547,9 @@ function logout() {
     toogleUserLoginMenus();
 }
 function loadRegister() {
-    $.get(sections.register.html, function(sHtml) {
+    $.get(sections.register.html, function (sHtml) {
         $("#cntBody").append(sHtml);
+        initCurrentLanguage("#cntBody");
         sections.register.initialize();
     });
 }
@@ -585,6 +615,60 @@ function submitRegister() {
 function setLogged() {
     toogleUserLoginMenus();
     $(".dialog-box").remove();
+}
+
+// Language
+function changelanguage(lang, from) {
+    var currentLanguage = local.get("lang");
+    if (currentLanguage === null) {
+        currentLanguage = defaultLanguage;
+    }
+    if (currentLanguage.name !== lang) {
+        currentLanguage = getLanguage(lang);
+        local.set(currentLanguage, "lang");
+        loader.show();
+        if (currentLanguage.data !== null) {
+            loadLangTags(currentLanguage.data, from);
+        } else {
+            $.get(currentLanguage.file, function (data) {
+                currentLanguage.data = JSON.parse(data);
+                loadLangTags(currentLanguage.data, from);
+            });
+        }
+    }
+}
+function loadLangTags(langTags, from) {
+    if (typeof from == "undefined") { from = "body"; }
+    $(from).find("[data-language]").each(function () {
+        var langTag = langTags[$(this).attr("data-language")];
+        if (langTag !== null && langTag !== "") {
+            // TODO: mejorar
+            try {
+                $(this).text(langTag);
+            } catch(ex) {
+                $(this).val(langTag);
+            }
+        }
+    });
+    loader.close();
+}
+function getLanguage(lang) {
+    var sLang = null;
+    for (var language in languages) {
+        if (languages[language].name === lang) {
+            sLang = languages[language];
+        }
+    }
+    return sLang;
+}
+function initCurrentLanguage(from) { 
+    var currentLanguage = local.get("lang");
+    if (currentLanguage !== null) {
+        if (currentLanguage !== defaultLanguage.name) {
+            local.remove("lang");
+            changelanguage(currentLanguage.name);
+        }
+    }
 }
 
 // DOM manipulation functions
@@ -795,6 +879,7 @@ function addFCLItem(e, tipo, cant) {
             '<td><label>' + cant + '</label> contenedores de <label>' + tipoText + '</label></td>' +
             '</tr>');
         $("#txtFCLCantidad").val("");
+        initCurrentLanguage("#tblFCLItems > tbody:last");
     } else {
         popupMsg.error("debe escribir una cantidad correcta.");
     }
@@ -803,14 +888,25 @@ function deleteFCLItem(e) {
     $(this).parent().parent().remove();
     return false;
 }
-function addLCLItem() {
-    var cant = $("#txtLCLCantidad").val();
+function addLCLItem(e, tipo, cant) {
+
+    if(typeof tipo == "undefined") {
+        tipo = $("#selLCLMedida option:selected").val();
+    }
+    if(typeof cant == "undefined") {
+        cant = $("#txtLCLCantidad").val();
+    }
+    var tipoText = $("#selLCLMedida option[value='" + tipo + "']").text();
+
+    $("#tblLCLItems > tbody tr[id='lclItemId-" + tipo + "']").remove();
+
     if (!isNaN(parseFloat(cant))) {
-        $("#tblLCLItems > tbody:last").append('<tr id="lclItemId-' + $("#selLCLMedida option:selected").val() + '" >' +
+        $("#tblLCLItems > tbody:last").append('<tr id="lclItemId-' + tipo + '" data-cant="' + cant + '" >' +
             '<td><button class="btn-eliminar" title="Eliminar"><img src="img/btn-eliminar.png" alt="Eliminar"></button></td>' +
-            '<td><label>' + cant + '</label> contenedores de <label>' + $("#selLCLMedida option:selected").text() + '</label></td>' +
+            '<td><label>' + cant + '</label> contenedores de <label>' + tipoText + '</label></td>' +
             '</tr>');
-        $("#txtLCLCantidad").val("");
+        $("#txtLCLCantidad").val();
+        initCurrentLanguage("#tblLCLItems > tbody:last");
     } else {
         popupMsg.error("debe escribir una medida correcta.");
     }
@@ -871,7 +967,7 @@ function searchIsValid() {
             valid = false;
         }
     } else {
-        var items = $("#tblFCLItems > tbody").children();
+        var items = $("#tblLCLItems > tbody").children();
         if (items.length === 0) {
             valid = false;
         }
@@ -906,11 +1002,101 @@ function loadResults() {
             var newSHtml = sHtml;
             newSHtml = newSHtml.replace(/%origen%/gi, search.Origen);
             newSHtml = newSHtml.replace(/%destino%/gi, search.Destino);
+            newSHtml = newSHtml.replace(/%object%/gi, JSON.stringify(items[i]));
             newSHtml = replaceVars(newSHtml, items[i]);
             $(cnt).append(newSHtml);
+            delete items[i].IdTarifario;
+            delete items[i].IdCarrier;
+            delete items[i].FechaDesde;
+            delete items[i].FechaHasta;
         }
+        generateGenericFilters(items);
+        initCurrentLanguage(cnt);
         $("input[name='btnComprar']").click(comprarTarifario);
     });
+}
+function generateGenericFilters(items) { 
+    var i, total = items.length, filterIndex, filterList = [];
+    for (i = 0; i < total; i++) {
+        for (var prop in items[i]) {
+            if (items[i][prop] !== null) {
+                filterIndex = existFilter(prop, filterList);
+                if(filterIndex === null) {
+                    filterList.push({ name: prop, items: [items[i][prop]] });
+                } else {
+                    if (existValueInFilterItems(items[i][prop], filterList[filterIndex].items) === null) {
+                        filterList[filterIndex].items.push(items[i][prop]);
+                    }
+                }
+            }
+        }
+    }
+    // implementation
+    if (filterList.length > 0) {
+        var j, k, filterLength = filterList.length, itemsLength, shtml = "<hr>";
+        for (j = 0; j < filterLength; j++) { 
+            itemsLength = filterList[j].items.length;
+            shtml += "<h6>" + filterList[j].name + "</h6>";
+            for (k = 0; k < itemsLength; k++) { 
+              shtml += "<input type='checkbox' data-filter='" + filterList[j].name + "' data-value='" + filterList[j].items[k] + "'><label>" + filterList[j].items[k] + "</label><br>";
+            }
+            shtml += "<hr>";
+        }
+        $("#cntFilters").html(shtml);
+        $("#cntFilters input[type='checkbox']").click(function () {
+            var filterEl = $("span.filterme"), l = filterEl.length, m, filter = $(this).attr("data-filter"), value = $(this).attr("data-value"), domElToBeFiltered = [];
+            // TODO: evaluar si tengo mas de un filtro a la vez, guardar el nuevo filtro
+            for (m = 0; m < l; m++) {
+                var val = $(filterEl[m]).html();
+                var obj = JSON.parse($(filterEl[m]).html());
+                if (obj[filter] !== null && obj[filter].toString() === value) {
+                    domElToBeFiltered.push(filterEl[m]);
+                }
+            }
+
+            if (domElToBeFiltered.length > 0) {
+                if ($(this).is(":checked")) {
+                    $(filterEl).parent().hide();
+                    $(domElToBeFiltered).parent().show();
+                    $("#cntFilters input[type='checkbox']").attr("checked", false); // quita todos los filtros
+                    $(this).attr("checked", true);
+                } else {
+                    $(filterEl).parent().show();
+                    $(domElToBeFiltered).parent().show();
+                    $("#cntFilters input[type='checkbox']").attr("checked", false); // quita todos los filtros
+                }
+            }
+            
+        });
+    }
+}
+function existFilter(filter, list) {
+    var i, length, exist = null;
+    if(typeof list != "undefined" && list.length > 0) {
+        length = list.length;
+        for(i =0; i < length; i++) {
+            if(filter === list[i].name) {
+                return i;
+            }
+        }
+    } else {
+        return null;
+    }
+    return exist;
+}
+function existValueInFilterItems(value, items) {
+    var i, length, exist = null;
+    if(typeof items != "undefined" && items.length > 0) {
+        length = items.length;
+        for(i =0; i < length; i++) {
+            if(value === items[i]) {
+                return i;
+            }
+        }
+    } else {
+        return null;
+    }
+    return exist;
 }
 function replaceVars(sHtml, item) {
     var vars = sHtml.match(/[%].*[%]/gi);
@@ -993,17 +1179,51 @@ function loadSelectedResult() {
         newSHtml = newSHtml.replace(/%contenedores%/gi, sContenedores);
         newSHtml = replaceVars(newSHtml, items);
         $(cnt).html(newSHtml);
+        initCurrentLanguage(cnt);
         $("input[name='btnConfirmarCompra']").click(submitUserTarifario);
-        $('#cntFileUpload').on("change", "input", function () {
-            var file = this.files[0];
-            $("#filUploading").show();
-            services.user.uploadFile(file, function (response) {
-                $("#filUploading").hide();
-                if (response.status === "not-ok") {
-                    alert(response.msg);
-                }
-            });
+
+        // FIXME: fileupload, nada andnuvo de forma async. Agregar un iframe con un aspx y al choto
+        /*$('#cntFileUpload').on("change", "input", function () {
+        var file = this.files[0];
+        $("#filUploading").show();
+        services.user.uploadFile(file, function (response) {
+        $("#filUploading").hide();
+        if (response.status === "not-ok") {
+        alert(response.msg);
+        }
         });
+        });*/
+        
+        //$.getScript("js/libs/fileupload/jquery.iframe-transport.js", function () {
+        //    $.getScript("js/libs/fileupload/jquery.fileupload.js", function () {
+        //        $.getScript("js/libs/fileupload/jquery.fileupload-fp.js", function () {
+        //            $.getScript("js/libs/fileupload/jquery.fileupload-ui.js", function () {
+        //                $.getScript("js/libs/fileupload/main.js", function () {
+
+
+        //                    $(function () {
+        //                        $('#filDocTar').fileupload({
+        //                            dataType: 'json',
+        //                            url: "http://www.newtimelogistics.com/fileUpload.ashx",
+        //                            done: function (e, data) {
+        //                                alert(JSON.parse(data).msg);
+        //                            }
+        //                        });
+        //                    });
+
+        //                    $('#filDocTar').bind('change', function (e) {
+        //                        $('#filDocTar').fileupload('add', {
+        //                            fileInput: $(this)
+        //                        });
+        //                    });
+
+
+        //                });
+        //            });
+        //        });
+        //    });
+        //});
+
         loader.close();
     });
 }

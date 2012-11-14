@@ -25,52 +25,62 @@
     <div class="container">
     <!--HEADER-->
       <header class="header-index">
-        <div class="header">
-            <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
-            <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
-            <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
-            <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
-                <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
-                    <h6>E-mail</h6>
-                    <input id="txtEmailHeader" type="email">
-                    <h6>Contraseña</h6>
-                    <input id="txtPasswordHeader" type="password">
-                    <input id="btnLoginHeader" type="submit" value="Ingresar">
-                    <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
-                </form>
-                <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
-                    <p id="userEmailHeader"></p><!--Dato: Mail del usuario-->
-                    <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+        <header>
+            <div class="header">
+                <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+                <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
+                <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
+                    <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
+                        <h6 data-language="email">E-mail</h6>
+                        <input id="txtEmailHeader" type="email">
+                        <h6 data-language="password">Contraseña</h6>
+                        <input id="txtPasswordHeader" type="password">
+                        <input id="btnLoginHeader" type="submit" data-language="login" value="Ingresar">
+                        <input id="btnAddUserHeader" type="button" data-language="new_user" value="Nuevo usuario">
+                    </form>
+                    <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
+                        <p id="userEmailHeader"></p><!--Dato: Mail del usuario-->
+                        <input id="btnLogoutHeader" type="button" data-language="close_session" value="Cerrar sesión">
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="clear"></div>
+            <div class="nav">
+                <nav class="width-74 float-left">
+                    <ul>
+                        <li><a href="importacion.html" data-language="impo">Importación</a></li>
+                        <li><a href="exportacion.html" data-language="expo">Exportación</a></li>
+                        <li><a href="contacto.html" data-language="contact">Contacto</a></li>
+                    </ul>
+                </nav>
+                <div class="width-24 float-left">
+                    <p>
+                        <a id="langEs" href="#" data-language="spanish">Español</a> |
+                        <a id="langEn" href="#" data-language="english">English</a>
+                    </p>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </header>
         <div class="clear"></div>
-        <div class="nav">
-        <nav>
-          <ul>
-            <li><a href="importacion.html">Importación</a></li>
-            <li><a href="exportacion.html">Exportación</a></li>
-            <li><a href="contacto.html">Contacto</a></li>
-          </ul>
-        </nav>
-        </div>
       </header>
     <!--end HEADER-->
     <!--CONTENT-->
       <section class="bg-index">
         <div>
           <div class="width-49 float-left">
-            <h1 class="align-right"><span class="red">NEW TIME</span> <span class="blue">LOGISTICS</span> logística internacional</h1>
+            <h1 class="align-right"><span class="red">NEW TIME</span> <span class="blue">LOGISTICS</span> <span data-language="international_log">logística internacional</span></h1>
           </div>
         </div>
         <div class="clear"></div>
         <div>
           <div class="width-49 float-left">
-            <p><span class="red">NUESTRA MISIÓN:</span> Revolucionar el sistema de elección en el  transporte logístico internacional para la mayor competitividad de nuestros clientes. Ser su asesor logístico virtual quien eliminara las barreras de tiempo dejando como premisa las mejores soluciones, producto de la  inteligencia artificial desarrollada por las necesidades de los propios clientes.</p>
+            <p><span data-language="our_misson_title" class="red">NUESTRA MISIÓN:</span> <span data-language="our_mission_desc">Revolucionar el sistema de elección en el  transporte logístico internacional para la mayor competitividad de nuestros clientes. Ser su asesor logístico virtual quien eliminara las barreras de tiempo dejando como premisa las mejores soluciones, producto de la  inteligencia artificial desarrollada por las necesidades de los propios clientes.</span></p>
           </div>
           <div class="width-49 float-left">
-            <p><span class="red">NUESTRA VISIÓN:</span> Cambiar el negocio de logistica, eliminando intermediarios y barreras que se traducen en demoras de la comunicacion directa entre las partes más interesadas y que generan el negocio.</p>
-            <p><span class="red">NUESTROS VALORES:</span> Ética, honestidad y transparencia.</p>
+            <p><span class="red" data-language="our_vision_title">NUESTRA VISIÓN:</span> <span data-language="our_vision_desc"> Cambiar el negocio de logistica, eliminando intermediarios y barreras que se traducen en demoras de la comunicacion directa entre las partes más interesadas y que generan el negocio.</span></p>
+            <p><span class="red" data-language="our_values_title">NUESTROS VALORES:</span><span data-language="our_values_desc"> Ética, honestidad y transparencia.</span></p>
           </div>
         </div>
         <div class="clear"></div>
@@ -80,8 +90,8 @@
       <footer>
         <p>New Time Logistic ® | Asesoría virtual en Logística Internacional | 
           <a href="contacto.html">Contactar</a> | 
-          <a href="#">Español</a> | 
-          <a href="#">English</a>
+          <a id="langEsFoot" href="#" data-language="spanish">Español</a> | 
+          <a id="langEnFoot" href="#" data-language="english">English</a>
         </p>
       </footer>
     <!--end FOOTER-->

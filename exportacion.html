@@ -26,34 +26,40 @@
     <!--HEADER-->
       <header class="header-index">
         <div class="header">
-            <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
+                <a href="http://www.newtimelogistics.com/" class="float-left"><img src="img/NewTimeLogistic-logo.png" alt="New Time Logistic"></a>
                 <button class="btn-user float-left" id="btnOpenDdUser" style="display:inline;"><img src="img/btn-user.png" alt="Usuario"></button>
                 <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
                 <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
                     <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
-                        <h6>E-mail</h6>
+                        <h6 data-language="email">E-mail</h6>
                         <input id="txtEmailHeader" type="email">
-                        <h6>Contraseña</h6>
+                        <h6 data-language="password">Contraseña</h6>
                         <input id="txtPasswordHeader" type="password">
-                        <input id="btnLoginHeader" type="submit" value="Ingresar">
-                        <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
+                        <input id="btnLoginHeader" type="submit" data-language="login" value="Ingresar">
+                        <input id="btnAddUserHeader" type="button" data-language="new_user" value="Nuevo usuario">
                     </form>
                     <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
                         <p id="userEmailHeader"></p><!--Dato: Mail del usuario-->
-                        <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+                        <input id="btnLogoutHeader" type="button" data-language="close_session" value="Cerrar sesión">
                     </div>
                 </div>
-        </div>
+            </div>
         <div class="clear"></div>
           <div class="nav">
-        <nav>
-          <ul>
-            <li><a href="importacion.html">Importación</a></li>
-            <li><a href="exportacion.html">Exportación</a></li>
-            <li><a href="contacto.html">Contacto</a></li>
-          </ul>
-        </nav>
-              </div>
+            <nav>
+              <ul>
+                <li><a href="importacion.html" data-language="impo">Importación</a></li>
+                <li><a href="exportacion.html" data-language="expo">Exportación</a></li>
+                <li><a href="contacto.html" data-language="contact">Contacto</a></li>
+              </ul>
+            </nav>
+            <div>
+                <p>
+                    <a id="langEs" href="#" data-language="spanish">Español</a> |
+                    <a id="langEn" href="#" data-language="english">English</a>
+                </p>
+            </div>
+        </div>
       </header>
     <!--end HEADER-->
     <!--CONTENT-->

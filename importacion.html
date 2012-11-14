@@ -33,16 +33,16 @@
                 <button class="btn-user float-left" id="btnCloseDdUser" style="display:none;"><img src="img/btn-user.png" alt="Usuario"></button>
                 <div class="dropdown dd-user" id="dropdownUser" style="display:none;">
                     <form id="cntLoginHeader" style="display: none;"><!--Mostrar solo si el usuario no está logueado-->
-                        <h6>E-mail</h6>
+                        <h6 data-language="email">E-mail</h6>
                         <input id="txtEmailHeader" type="email">
-                        <h6>Contraseña</h6>
+                        <h6 data-language="password">Contraseña</h6>
                         <input id="txtPasswordHeader" type="password">
-                        <input id="btnLoginHeader" type="submit" value="Ingresar">
-                        <input id="btnAddUserHeader" type="button" value="Nuevo usuario">
+                        <input id="btnLoginHeader" type="submit" data-language="login" value="Ingresar">
+                        <input id="btnAddUserHeader" type="button" data-language="new_user" value="Nuevo usuario">
                     </form>
                     <div id="cntUserHeader" style="display:none;"><!--Mostrar solo si el usuario está logueado-->
                         <p id="userEmailHeader"></p><!--Dato: Mail del usuario-->
-                        <input id="btnLogoutHeader" type="button" value="Cerrar sesión">
+                        <input id="btnLogoutHeader" type="button" data-language="close_session" value="Cerrar sesión">
                     </div>
                 </div>
             </div>
@@ -50,15 +50,15 @@
             <div class="nav">
                 <nav class="width-74 float-left">
                     <ul>
-                        <li><a href="importacion.html">Importación</a></li>
-                        <li><a href="exportacion.html">Exportación</a></li>
-                        <li><a href="contacto.html">Contacto</a></li>
+                        <li><a href="importacion.html" data-language="impo">Importación</a></li>
+                        <li><a href="exportacion.html" data-language="expo">Exportación</a></li>
+                        <li><a href="contacto.html" data-language="contact">Contacto</a></li>
                     </ul>
                 </nav>
                 <div class="width-24 float-left">
                     <p>
-                        <a href="#">Español</a> |
-                        <a href="#">English</a>
+                        <a id="langEs" href="#" data-language="spanish">Español</a> |
+                        <a id="langEn" href="#" data-language="english">English</a>
                     </p>
                 </div>
                 <div class="clear"></div>
@@ -71,11 +71,11 @@
                 <!--left column-->
                 <div class="width-74 float-left">
                     <nav>
-                        <h2 class="float-left">Importar</h2>
+                        <h2 class="float-left" data-language="import">Importar</h2>
                         <ul class="float-left">
-                            <li class="btn-paso1 btn-paso1-active"><a href="importacion.html">Formulario de cotización</a></li>
-                            <li class="btn-paso2"><a id="lnkPaso2" href="importacion-transportes.html">Transportes disponibles</a></li>
-                            <li class="btn-paso3"><a id="lnkPaso3" href="importacion-confirmacion.html">Confirmación de compra</a></li>
+                            <li class="btn-paso1 btn-paso1-active"><a href="importacion.html" data-language="form_cotiz">Formulario de cotización</a></li>
+                            <li class="btn-paso2"><a id="lnkPaso2" href="importacion-transportes.html" data-language="trasnport_available">Transportes disponibles</a></li>
+                            <li class="btn-paso3"><a id="lnkPaso3" href="importacion-confirmacion.html" data-language="confirm_buy">Confirmación de compra</a></li>
                         </ul>
                         <div class="clear"></div>
                     </nav>
@@ -83,22 +83,22 @@
                         <div class="container-border">
                             <div>
                                 <div id="cntOrigen" class="width-49 float-left">
-                                    <h6>Origen</h6>
+                                    <h6 data-language="origin">Origen</h6>
                                     <input type="text" id="txtOrigen">
                                 </div>
                                 <div id="cntDestino" class="width-49 float-left">
-                                    <h6>Destino</h6>
+                                    <h6 data-language="destiny">Destino</h6>
                                     <input type="text" id="txtDestino">
                                 </div>
                                 <div class="clear"></div>
                             </div>
                             <div>
                                 <div class="width-49 float-left">
-                                    <h6>Fecha de embarque</h6>
+                                    <h6 data-language="sailing_date">Fecha de embarque</h6>
                                     <input type="text" id="txtFecha" />
                                 </div>
                                 <div class="width-49 float-left">
-                                    <h6>Tipo de carga</h6>
+                                    <h6 data-language="type_charge">Tipo de carga</h6>
                                     <select id="selTipoCarga">
                                         <option value="fcl">FCL</option>
                                         <option value="lcl">LCL</option>
@@ -106,24 +106,24 @@
                                 </div>
                                 <div class="clear"></div>
                             </div>
-                            <h3>Agregar contenedor</h3>
+                            <h3 data-language="add_container">Agregar contenedor</h3>
                             <!--FCL-->
                             <div id="cntFCLContenedores">
                                 <div class="width-49 float-left">
                                     <div class="width-24 float-left">
-                                        <h6>Cantidad</h6>
+                                        <h6 data-language="quantity">Cantidad</h6>
                                         <input type="number" id="txtFCLCantidad">
                                     </div>
                                     <div class="width-49 float-left">
-                                        <h6>Capacidad</h6>
+                                        <h6 data-language="capacity">Capacidad</h6>
                                         <select id="selFCLCapacidad">
                                         </select>
                                     </div>
-                                    <input id="btnFCLAgregar" type="button" value="Agregar" class="btn-chico float-left">
+                                    <input id="btnFCLAgregar" data-language="add" type="button" value="Agregar" class="btn-chico float-left">
                                     <div class="clear"></div>
                                 </div>
                                 <div class="width-49 float-left">
-                                    <h6>Contenedores agregados</h6>
+                                    <h6 data-language="added_containers">Contenedores agregados</h6>
                                     <table id="tblFCLItems" class="tbl-first-20">
                                         <tbody></tbody>
                                     </table>
@@ -135,19 +135,19 @@
                             <div id="cntLCLContenedores">
                                 <div class="width-49 float-left">
                                         <div class="width-24 float-left">
-                                            <h6>Cantidad</h6>
+                                            <h6 data-language="quantity">Cantidad</h6>
                                             <input type="number" id="txtLCLCantidad">
                                         </div>
                                         <div class="width-49 float-left">
-                                            <h6>Medida</h6>
+                                            <h6 data-language="measure">Medida</h6>
                                             <select id="selLCLMedida">
                                             </select>
                                         </div>
-                                        <input id="btnLCLAgregar" type="button" value="Agregar" class="btn-chico float-left">
+                                        <input id="btnLCLAgregar" data-language="add" type="button" value="Agregar" class="btn-chico float-left">
                                     <div class="clear"></div>
                                 </div>
                                 <div class="width-49 float-left">
-                                    <h6>Contenedores agregados</h6>
+                                    <h6 data-language="added_containers">Contenedores agregados</h6>
                                     <table id="tblLCLItems" class="tbl-first-20">
                                         <tbody></tbody>
                                     </table>
@@ -159,9 +159,9 @@
                         <!--paginador-->
                         <div>
                             <div class="btn-group paginador">
-                                <input disabled="disabled" type="button" value="&lsaquo; Anterior" class="btn-chico float-left">
-                                <input type="reset" value="Cancelar" class="btn-chico float-left ie-cancel">
-                                <input id="nextStep" type="submit" value="Siguiente &rsaquo;" class="btn-chico float-right">
+                                <input disabled="disabled" data-language="back" type="button" value="&lsaquo; Anterior" class="btn-chico float-left">
+                                <input type="reset" value="Cancelar" data-language="cancel" class="btn-chico float-left ie-cancel">
+                                <input id="nextStep" type="submit" data-language="next" value="Siguiente &rsaquo;" class="btn-chico float-right">
                                 <div class="clear"></div>
                             </div>
                         </div>
@@ -174,15 +174,15 @@
                     <div class="container-border">
                         <div class="btn-group">
                             <button class="btn-chico float-left btn-azul">Login</button>
-                            <button id="btnRegisterAside" class="btn-chico float-right">Registro</button>
+                            <button id="btnRegisterAside" class="btn-chico float-right" data-language="register">Registro</button>
                             <div class="clear"></div>
                         </div>
                         <form class="container-padding">
-                            <h6>Email</h6>
+                            <h6 data-language="email">Email</h6>
                             <input id="txtEmailAside" type="email">
-                            <h6>Contraseña</h6>
+                            <h6 data-language="password">Contraseña</h6>
                             <input id="txtPasswordAside" type="password">
-                            <input id="btnLoginAside" type="submit" value="Ingresar" class="btn-chico">
+                            <input id="btnLoginAside" data-language="login" type="submit" value="Ingresar" class="btn-chico">
                         </form>
                     </div>
                 </aside>
@@ -194,8 +194,8 @@
         <!--FOOTER-->
         <footer>
             <div class="width-49 float-left">
-                <p>New Time Logistics ® | Asesoría virtual en Logística Internacional | 
-                    <a href="contacto.html">Contactar</a>
+                <p data-language="footer_ntl">New Time Logistics ® | Asesoría virtual en Logística Internacional | 
+                    <a href="contacto.html" data-language="contact">Contactar</a>
                 </p>    
             </div>
             <div class="width-49 float-left">

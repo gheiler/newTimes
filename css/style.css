@@ -371,7 +371,7 @@ nav ul{
 	margin: 0px;
 	padding: 0px 20px 0px 20px;
 	}
-	nav ul li{
+nav ul li{
 	float: left;
 	display: block;
 	margin-right: 30px;
@@ -567,7 +567,7 @@ input[type=radio]+label{
 	}
 	
 textarea{
-	height: 60px;
+	height: 87px;
 	resize: vertical;
 	}
 	
@@ -769,26 +769,26 @@ input[type="submit"][disabled="disabled"]:hover{
 	overflow: hidden;
 	cursor: pointer;
 	}
-	.file input{
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 2;
-	opacity: 0;
-	filter: Alpha(opacity=0);
-	cursor: pointer;
-	}
-	.file img{
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	cursor: pointer;
-	}
-	input[type="text"].nombreArchivo{
-	display: inline;
-	background-color: transparent;
-	}
+.file input{
+position: absolute;
+top: 0;
+left: 0;
+z-index: 2;
+opacity: 0;
+filter: Alpha(opacity=0);
+cursor: pointer;
+}
+.file img{
+position: absolute;
+top: 0;
+left: 0;
+z-index: 1;
+cursor: pointer;
+}
+input[type="text"].nombreArchivo{
+display: inline;
+background-color: transparent;
+}
 
 .btn-user{
 	padding: 3px 10px 0px 10px;
