@@ -195,6 +195,10 @@ var sections = {
     register: {
         html: "items/registro.html",
         initialize: initRegister
+    },
+    contact: {
+        html: "contacto.html",
+        initialize: initContacto
     }
 };
 function goTo (section, transitionType) {
@@ -358,6 +362,13 @@ var services = {
             method = "GetMedidas";
             urlServicemethod = this.serviceURL + method;
             callServiceBackground(type, urlServicemethod, "", Success);
+        },
+        contact: function (data, success) { 
+            var type, method, urlServicemethod;
+            type = "POST";
+            method = "Contact";
+            urlServicemethod = this.serviceURL + method;
+            callServiceBackground(type, urlServicemethod, data, success);
         }
     },
     user: {
@@ -399,23 +410,23 @@ var services = {
             var formData = new FormData();
             formData.append("data", file);
             $.ajax({
-                url: servicesURL + urlServicemethod,
-                type: type,
-                xhr: function () {
-                    myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) { // if upload property exists
-                        //myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // progressbar
-                    }
-                    return myXhr;
-                },
-                success: Success,
-                error: errorHandler = function () {
-                    alert("Ha ocurrido un error subiendo el archivo");
-                },
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false
+            url: servicesURL + urlServicemethod,
+            type: type,
+            xhr: function () {
+            myXhr = $.ajaxSettings.xhr();
+            if (myXhr.upload) { // if upload property exists
+            //myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // progressbar
+            }
+            return myXhr;
+            },
+            success: Success,
+            error: errorHandler = function () {
+            alert("Ha ocurrido un error subiendo el archivo");
+            },
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false
             }, "json");*/
         }
     }
@@ -533,6 +544,11 @@ function initHome() {
 function initRegister() {
     $("#btnRegisterDialog").on("click", submitRegister);
 }
+function initContacto() {
+    initHeader();
+
+    $("#sendContact").on("click", contact);
+}
 
 // Authentication, login, register
 function getToken() {
@@ -597,6 +613,7 @@ function submitRegister() {
         return;
     }
     if(valid) {
+        loader.show();
         var userData = {
             Nombre: name,
             Apellido: lastName,
@@ -604,10 +621,11 @@ function submitRegister() {
             Password: pass
         };
         local.set(userData, "user", 30);
-        services.common.register(JSON.stringify({ user: userData}), function(response) {
+        services.common.register(JSON.stringify({ user: userData }), function (response) {
             var msg = JSON.parse(response.msg);
             localStorage.setItem("AuthToken", msg.hash);
             setLogged();
+            loader.close();
             popupMsg.success(msg.message);
         });
     }
@@ -1015,6 +1033,66 @@ function loadResults() {
         $("input[name='btnComprar']").click(comprarTarifario);
     });
 }
+function replaceVars(sHtml, item) {
+    var vars = sHtml.match(/[%].*[%]/gi);
+    var total = vars.length, i;
+    for(i = 0; i < total; i++) {
+        var setted = false;
+        var varName = vars[i].replace(/%/g, "");
+        var bar = vars[i];
+        var re = new RegExp(bar,"gi");
+        for (var prop in item) {
+            if (item[prop] !== null && prop.toLowerCase() === varName.toLowerCase()) {
+                sHtml = sHtml.replace(re, item[prop]);
+                setted = true;
+                break;
+            }
+        }
+        if (!setted) {
+            sHtml = sHtml.replace(re, "");
+        }
+    }
+    return sHtml;
+}
+function currencyResults() {
+    var importes = $("[data-name='result-importe']");
+    var selectedCurrency = $(this).attr("data-value");
+    if(importes.length > 0) {
+        var currentCurrency = $(importes[0]).attr("data-value");
+        var multiplier = getCurrencyMultiplier(currentCurrency, selectedCurrency);
+        if (selectedCurrency != currentCurrency) {
+            for (var i = 0; i < importes.length; i++) {
+                var currentImporte = parseFloat($(importes[i]).children("span[data-name='importe']").html());
+                $(importes[i]).attr("data-value", selectedCurrency);
+                $(importes[i]).children("span[data-name='importe']").html(currentImporte * multiplier);
+                $(importes[i]).children("span[data-name='currency']").html(selectedCurrency + " ");
+            }
+        }
+    }
+    return false;
+}
+function orderResults() {
+    var type = $(this).attr("data-value"), results = local.get("searchResults");
+    switch(type) {
+        case "minorPrice":
+            results.sort(function (a, b) {
+                return a.Importe - b.Importe;
+            });
+            break;
+        case "mayorPrice":
+            results.sort(function (a, b) {
+                return b.Importe - a.Importe;
+            });
+            break;
+    }
+    local.set(results, "searchResults");
+    loadResults();
+    return false;
+}
+function getCurrencyMultiplier(from, to) {
+    return currencies[from][to];
+}
+
 function generateGenericFilters(items) { 
     var i, total = items.length, filterIndex, filterList = [];
     for (i = 0; i < total; i++) {
@@ -1098,65 +1176,6 @@ function existValueInFilterItems(value, items) {
     }
     return exist;
 }
-function replaceVars(sHtml, item) {
-    var vars = sHtml.match(/[%].*[%]/gi);
-    var total = vars.length, i;
-    for(i = 0; i < total; i++) {
-        var setted = false;
-        var varName = vars[i].replace(/%/g, "");
-        var bar = vars[i];
-        var re = new RegExp(bar,"gi");
-        for (var prop in item) {
-            if (item[prop] !== null && prop.toLowerCase() === varName.toLowerCase()) {
-                sHtml = sHtml.replace(re, item[prop]);
-                setted = true;
-                break;
-            }
-        }
-        if (!setted) {
-            sHtml = sHtml.replace(re, "");
-        }
-    }
-    return sHtml;
-}
-function currencyResults() {
-    var importes = $("[data-name='result-importe']");
-    var selectedCurrency = $(this).attr("data-value");
-    if(importes.length > 0) {
-        var currentCurrency = $(importes[0]).attr("data-value");
-        var multiplier = getCurrencyMultiplier(currentCurrency, selectedCurrency);
-        if (selectedCurrency != currentCurrency) {
-            for (var i = 0; i < importes.length; i++) {
-                var currentImporte = parseFloat($(importes[i]).children("span[data-name='importe']").html());
-                $(importes[i]).attr("data-value", selectedCurrency);
-                $(importes[i]).children("span[data-name='importe']").html(currentImporte * multiplier);
-                $(importes[i]).children("span[data-name='currency']").html(selectedCurrency + " ");
-            }
-        }
-    }
-    return false;
-}
-function orderResults() {
-    var type = $(this).attr("data-value"), results = local.get("searchResults");
-    switch(type) {
-        case "minorPrice":
-            results.sort(function (a, b) {
-                return a.Importe - b.Importe;
-            });
-            break;
-        case "mayorPrice":
-            results.sort(function (a, b) {
-                return b.Importe - a.Importe;
-            });
-            break;
-    }
-    local.set(results, "searchResults");
-    loadResults();
-    return false;
-}
-function getCurrencyMultiplier(from, to) {
-    return currencies[from][to];
-}
 
 function comprarTarifario(){
     var idTarifario = parseInt($(this).attr("id").split("-")[1], 10);
@@ -1179,6 +1198,7 @@ function loadSelectedResult() {
         newSHtml = newSHtml.replace(/%contenedores%/gi, sContenedores);
         newSHtml = replaceVars(newSHtml, items);
         $(cnt).html(newSHtml);
+        //$(cnt).append("<iframe src='/upload.html' height='50' width='500' ></iframe>");
         initCurrentLanguage(cnt);
         $("input[name='btnConfirmarCompra']").click(submitUserTarifario);
 
@@ -1229,14 +1249,38 @@ function loadSelectedResult() {
 }
 function submitUserTarifario() {
     loader.show();
-    var foo = local.get("selectTarifario");
+    var test = $('#cntBody iframe').contents().find('#filesList').html();
     var idTarifario = $(this).attr("id").split("-")[1];
     var message = $("#txtMessageTar").val();
-    services.user.confirmTarifa(JSON.stringify({ auth: auth(), search: local.get("search"), tarifa: local.get("selectTarifario"), msg: message ,fileName: "" }), function (response) {
+    services.user.confirmTarifa(JSON.stringify({ auth: auth(), search: local.get("search"), tarifa: local.get("selectTarifario"), msg: message ,fileName: $("#filesList").html() }), function (response) {
         popupMsg.success(response.msg);
         local.remove("selectTarifario");
         local.remove("searchResults");
         local.remove("search");
+        goTo(sections.home);
+    });
+    return false;
+}
+
+function contact() {
+    var name = $("#txtNameCon").val(), lastName = $("#txtSurnameCon").val(), email = $("#txtMailcon").val(), tel = $("#txtTelCon").val(), message = $("#txtMessage").val(), valid = true;
+    if(name === "" || lastName === "" || email === "" || tel === "" || message === "") {
+        valid = false;
+        popupMsg.error("Debes completar todos los campos.");
+        return false;
+    }
+    loader.show();
+    services.common.contact(JSON.stringify({
+        contact: {
+            Name: name,
+            LastName: lastName,
+            Email: email,
+            Tel: tel,
+            Message: message
+        }
+    }), function (response) {
+        loader.close();
+        alert(response.msg);
         goTo(sections.home);
     });
     return false;
