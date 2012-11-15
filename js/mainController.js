@@ -1249,10 +1249,10 @@ function loadSelectedResult() {
 }
 function submitUserTarifario() {
     loader.show();
-    var test = $('#cntBody iframe').contents().find('#filesList').html();
+    var files = $('#cntBody iframe').contents().find('#filesList').html();
     var idTarifario = $(this).attr("id").split("-")[1];
     var message = $("#txtMessageTar").val();
-    services.user.confirmTarifa(JSON.stringify({ auth: auth(), search: local.get("search"), tarifa: local.get("selectTarifario"), msg: message ,fileName: $("#filesList").html() }), function (response) {
+    services.user.confirmTarifa(JSON.stringify({ auth: auth(), search: local.get("search"), tarifa: local.get("selectTarifario"), msg: message ,fileName: files }), function (response) {
         popupMsg.success(response.msg);
         local.remove("selectTarifario");
         local.remove("searchResults");
