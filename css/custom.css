@@ -1,6 +1,6 @@
 .list-filter {
     display: none;
-    list-style-type: none;
+    list-style-type:none;
     margin: 0px;
     padding-left: 0px;
     margin-top: -20px;
@@ -10,6 +10,9 @@
     position: absolute;
     background-color: white;
     width: 337px;
+    max-height: 250px;
+    overflow-y: scroll;
+    z-index: 9999;
 }
 .list-filter li {
     display: none;

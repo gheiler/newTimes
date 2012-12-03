@@ -26,6 +26,7 @@ var languages = {
 
 defaultLanguage = languages.es;
 
+
 // plugin configs
 jQuery(function($){
     /* InicializaciÃ³n en espaÃ±ol para la extensiÃ³n 'UI date picker' para jQuery. */
@@ -335,12 +336,12 @@ var services = {
             urlServicemethod = this.serviceURL + method;
             callService(type, urlServicemethod, data, Success);
         },
-        getOrigenes: function (Success) {
+        getOrigenes: function (data, Success) {
             var type, method, urlServicemethod;
-            type = "GET";
+            type = "POST";
             method = "GetOrigenes";
             urlServicemethod = this.serviceURL + method;
-            callServiceBackground(type, urlServicemethod, "", Success);
+            callServiceBackground(type, urlServicemethod, data, Success);
         },
         getDestinos: function (Success) {
             var type, method, urlServicemethod;
@@ -493,6 +494,7 @@ function initFooter() {
     $("#langEnFoot").on("click", function () { changelanguage("en"); return false; });
 }
 function initImpo() {
+
     initHeader();
     $("#btnRegisterAside").on("click", loadRegister);
     $("#btnLoginAside").on("click", submitLoginAside);
@@ -506,11 +508,13 @@ function initImpo() {
     $("#tblFCLItems button.btn-eliminar").live("click", deleteFCLItem);
     $("#tblLCLItems button.btn-eliminar").live("click", deleteLCLItem);
 
+
+
     toogleContenedores();
     loadFCLCapacidades();
     loadLCLMedidas();
     loadDestinos();
-    loadOrigenes();
+    loadOrigenes(1);
     //loadSearch();
 }
 function initImpoResults() {
@@ -528,7 +532,7 @@ function initImpoResults() {
     toogleContenedores();
     loadFCLCapacidades();
     loadLCLMedidas();
-    loadOrigenes();
+    loadOrigenes(1);
     loadDestinos();
 
     loadSearch();
@@ -763,13 +767,16 @@ function toogleContenedores() {
     if ($("#selTipoCarga").val() === "fcl") {
         $("#cntFCLContenedores").show();
         $("#cntLCLContenedores").hide();
+        loadOrigenes(1);
     } else { 
         $("#cntFCLContenedores").hide();
         $("#cntLCLContenedores").show();
+        loadOrigenes(2);
     }
 }
 
-function loadOrigenes(response) {
+
+function loadOrigenes(tipo, response) {
     // no cache always get from server
     /*var items = local.get("origen");
     if (items !== null) {
@@ -780,12 +787,13 @@ function loadOrigenes(response) {
             loadOrigenesItems(response.msg);
         });
     }*/
-    services.common.getOrigenes(function (response) {
+    services.common.getOrigenes(JSON.stringify({ tipo: tipo }), function (response) {
         local.set(response.msg, "origen");
         loadOrigenesItems(response.msg);
     });
 }
 function loadOrigenesItems(items) {
+    $("#origenFilterList").remove();
     var total = items.length, i;
     var ul = document.createElement("ul");
     $(ul).attr("class", "list-filter").attr("id","origenFilterList");
@@ -796,8 +804,18 @@ function loadOrigenesItems(items) {
     $('#cntOrigen').append(ul);
     $("#txtOrigen").on("keyup", filterOrigen);
     $(ul).children().on("click", selectOrigen);
+
+//    $("#txtOrigen").autocomplete({
+//        source: local.get("origen"),
+//        minLength: 2
+//        select: function (event, ui) {
+//            log(ui.item ?
+//                    "Selected: " + ui.item.value + " aka " + ui.item.id :
+//                    "Nothing selected, input was " + this.value);
+        //}
+    //});  
 }
-function loadDestinos(response) {
+function loadDestinos(param, response) {
     // no cache always get from server
     /*var items = local.get("destino");
     if (items !== null) {
@@ -877,7 +895,7 @@ function selectDestino() {
     $("#txtDestino").val($(this).text());
     $("#destinoFilterList").hide();
     selectedDestino = parseInt($(this).attr("id").split("-")[1], 10);
-    $("#txtFecha").focus();
+    //$("#txtFecha").focus();
 }
 
 function addFCLItem(e, tipo, cant) {
